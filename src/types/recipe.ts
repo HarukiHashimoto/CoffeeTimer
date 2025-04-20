@@ -1,7 +1,8 @@
-export interface Step {
+export type Step = {
   description: string
-  duration?: number // seconds
-  waterAmount?: number // ml
+  duration?: number
+  time?: number
+  amount?: number
 }
 
 export interface Recipe {

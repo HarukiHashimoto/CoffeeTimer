@@ -40,16 +40,29 @@ export const secondPours: Pour[] = [
   }
 ]
 
-export function calculatePours(totalWater: number, firstPour: Pour, secondPour: Pour) {
+interface PourStep {
+  amount: number
+  time: number
+}
+
+interface CalculatePoursResult {
+  firstSteps: PourStep[]
+  secondSteps: PourStep[]
+  recommendedCoffee: number
+}
+
+export function calculatePours(totalWater: number, firstPour: Pour, secondPour: Pour): CalculatePoursResult {
   const firstPart = totalWater * 0.4  // 全体の40%
   const secondPart = totalWater * 0.6  // 全体の60%
   
   const firstSteps = firstPour.ratios.map(ratio => ({
-    amount: Math.round(firstPart * ratio)
+    amount: Math.round(firstPart * ratio),
+    time: 30
   }))
-  
+
   const secondSteps = secondPour.ratios.map(ratio => ({
-    amount: Math.round(secondPart * ratio)
+    amount: Math.round(secondPart * ratio),
+    time: 30
   }))
 
   return {

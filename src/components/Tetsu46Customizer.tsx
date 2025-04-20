@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Pour, firstPours, secondPours, calculatePours } from '@/data/tetsu46Config'
-import { Recipe } from '@/types/recipe'
+import { Recipe, Step } from '@/types/recipe'
 import { useRecipe } from '@/contexts/RecipeContext'
 import { useRouter } from 'next/navigation'
 
@@ -13,13 +13,27 @@ export default function Tetsu46Customizer() {
   const [selectedFirstPour, setSelectedFirstPour] = useState<Pour>(firstPours[0])
   const [selectedSecondPour, setSelectedSecondPour] = useState<Pour>(secondPours[0])
   const recommendedCoffee = Math.round(totalWater / 15) // 1:15の抽出比率
+  const [firstSteps, setFirstSteps] = useState<Step[]>([])
+  const [secondSteps, setSecondSteps] = useState<Step[]>([])
 
   useEffect(() => {
-    const { firstSteps, secondSteps, recommendedCoffee } = calculatePours(
+    const { firstSteps: newFirstSteps, secondSteps: newSecondSteps } = calculatePours(
       totalWater,
       selectedFirstPour,
       selectedSecondPour
     )
+
+    setFirstSteps(newFirstSteps.map((step, index) => ({
+      description: `${index + 1}回目の注ぎ`,
+      amount: step.amount,
+      time: step.time,
+    })))
+
+    setSecondSteps(newSecondSteps.map((step, index) => ({
+      description: `${index + firstSteps.length + 1}回目の注ぎ`,
+      amount: step.amount,
+      time: step.time,
+    })))
 
     // 各ステップの時間を計算
     let currentTime = 0
@@ -166,6 +180,21 @@ export default function Tetsu46Customizer() {
             <h3 className="font-medium">注ぎ方</h3>
             <p>前半: {selectedFirstPour.name}（{selectedFirstPour.description}）</p>
             <p>後半: {selectedSecondPour.name}（{selectedSecondPour.description}）</p>
+          </div>
+          <div>
+            <h3 className="font-medium">注ぎ時間</h3>
+            <div className="space-y-2">
+              {firstSteps.map((step, index) => (
+                <p key={`first-${index}`}>
+                  {index + 1}回目: {step.time}秒で{step.amount}g
+                </p>
+              ))}
+              {secondSteps.map((step, index) => (
+                <p key={`second-${index}`}>
+                  {index + firstSteps.length + 1}回目: {step.time}秒で{step.amount}g
+                </p>
+              ))}
+            </div>
           </div>
         </div>
         <button

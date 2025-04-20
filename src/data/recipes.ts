@@ -10,12 +10,13 @@ export const recipes: Recipe[] = [
     grindSize: '中挽き',
     totalTime: 2.5,
     steps: [
-      { description: '00:00 蒸らし: 30gのお湯を注ぐ', duration: 10, waterAmount: 30 },
-      { description: '00:10 蒸らしを待つ', duration: 30 },
-      { description: '00:40 1回目: 95gのお湯を注ぐ', duration: 20, waterAmount: 95 },
-      { description: '01:00 抽出を待つ', duration: 20 },
-      { description: '01:20 2回目: 100gのお湯を注ぐ', duration: 20, waterAmount: 100 },
-      { description: '01:40 抽出を待つ', duration: 20 },
+      { description: '事前準備', duration: 30 },
+      { description: '1回目の注ぎ', duration: 30, amount: 60 },
+      { description: '蒸らし', duration: 30 },
+      { description: '2回目の注ぎ', duration: 30, amount: 60 },
+      { description: '蒸らし', duration: 30 },
+      { description: '3回目の注ぎ', duration: 30, amount: 60 },
+      { description: '抽出完了', duration: 30 },
       { description: '02:00 ドリッパーを外す' }
     ],
     image: '/recipes/v60.jpg'
