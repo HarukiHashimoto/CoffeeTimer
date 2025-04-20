@@ -1,7 +1,11 @@
 import { recipes } from '@/data/recipes'
 import Link from 'next/link'
 import RecipeDetail from '@/components/RecipeDetail'
-import { redirect } from 'next/navigation'
+import dynamic from 'next/dynamic'
+
+const Tetsu46Customizer = dynamic(() => import('@/components/Tetsu46Customizer'), {
+  ssr: false,
+})
 
 export function generateStaticParams() {
   return recipes.map((recipe) => ({
@@ -11,7 +15,6 @@ export function generateStaticParams() {
 
 type Props = {
   params: { id: string }
-  searchParams: { [key: string]: string | string[] | undefined }
 }
 
 export default function RecipePage({ params }: Props) {
@@ -27,9 +30,9 @@ export default function RecipePage({ params }: Props) {
     )
   }
 
-  // テツ式4:6メソッドの場合は直接カスタマイズページにリダイレクト
+  // テツ式4:6メソッドの場合は直接カスタマイズコンポーネントを表示
   if (recipe.id === 'tetsu-4-6') {
-    redirect('/recipes/tetsu-4-6')
+    return <Tetsu46Customizer />
   }
 
   return <RecipeDetail recipe={recipe} />

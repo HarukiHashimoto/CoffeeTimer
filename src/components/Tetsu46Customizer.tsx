@@ -3,12 +3,10 @@
 import { useState, useEffect } from 'react'
 import { Pour, firstPours, secondPours, calculatePours } from '@/data/tetsu46Config'
 import { Recipe } from '@/types/recipe'
+import { useRecipe } from '@/contexts/RecipeContext'
 
-interface Props {
-  onRecipeChange: (recipe: Recipe) => void
-}
-
-export default function Tetsu46Customizer({ onRecipeChange }: Props) {
+export default function Tetsu46Customizer() {
+  const { setSelectedRecipe } = useRecipe()
   const [totalWater, setTotalWater] = useState(300)
   const [selectedFirstPour, setSelectedFirstPour] = useState<Pour>(firstPours[0])
   const [selectedSecondPour, setSelectedSecondPour] = useState<Pour>(secondPours[0])
@@ -54,19 +52,23 @@ export default function Tetsu46Customizer({ onRecipeChange }: Props) {
     ]
 
     const customRecipe: Recipe = {
-      id: 'tetsu-4-6-custom',
+      id: 'tetsu-4-6',
       name: `4:6メソッド（${selectedFirstPour.name} × ${selectedSecondPour.name}）`,
       method: 'ハリオV60',
-      description: `前半は「${selectedFirstPour.name}（${selectedFirstPour.description}）」、後半は「${selectedSecondPour.name}（${selectedSecondPour.description}）」の組み合わせです。`,
-      ratio: `1:15 （コーヒー${recommendedCoffee}g：お湯${totalWater}g）`,
+      description: `前半は「${selectedFirstPour.name}（${selectedFirstPour.description}）」、後半は「${selectedSecondPour.name}（${selectedSecondPour.description}）」の組み合わせです。
+
+推奨抽出量：
+コーヒー豆 ${recommendedCoffee}g
+お湯 ${totalWater}g`,
+      ratio: `1:${(totalWater / recommendedCoffee).toFixed(1)}`,
       grindSize: '中粗挽き',
       totalTime: 3.5,
-      steps,
+      steps: steps,
       image: '/recipes/v60.jpg'
     }
 
-    onRecipeChange(customRecipe)
-  }, [totalWater, selectedFirstPour, selectedSecondPour, onRecipeChange])
+    setSelectedRecipe(customRecipe)
+  }, [totalWater, selectedFirstPour, selectedSecondPour, setSelectedRecipe])
 
   return (
     <div className="space-y-6 bg-white rounded-lg shadow-md p-6">
