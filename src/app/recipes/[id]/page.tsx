@@ -8,7 +8,12 @@ export function generateStaticParams() {
   }))
 }
 
-export default function RecipePage({ params }: { params: { id: string } }) {
+type Props = {
+  params: { id: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export default function RecipePage({ params, searchParams }: Props) {
   const recipe = recipes.find(r => r.id === params.id)
   if (!recipe) {
     return (
