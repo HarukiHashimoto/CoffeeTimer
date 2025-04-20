@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react'
 import { Pour, firstPours, secondPours, calculatePours } from '@/data/tetsu46Config'
 import { Recipe } from '@/types/recipe'
 import { useRecipe } from '@/contexts/RecipeContext'
+import { useRouter } from 'next/navigation'
 
 export default function Tetsu46Customizer() {
+  const router = useRouter()
   const { setSelectedRecipe } = useRecipe()
   const [totalWater, setTotalWater] = useState(300)
   const [selectedFirstPour, setSelectedFirstPour] = useState<Pour>(firstPours[0])
@@ -68,7 +70,8 @@ export default function Tetsu46Customizer() {
     }
 
     setSelectedRecipe(customRecipe)
-  }, [totalWater, selectedFirstPour, selectedSecondPour, setSelectedRecipe])
+    router.push('/CoffeeTimer/timer')
+  }, [totalWater, selectedFirstPour, selectedSecondPour, setSelectedRecipe, router])
 
   return (
     <div className="space-y-6 bg-white rounded-lg shadow-md p-6">
