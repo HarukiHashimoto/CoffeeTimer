@@ -5,9 +5,10 @@ import { useState, useEffect } from 'react'
 interface TimerComponentProps {
   onTimeUpdate: (time: number) => void
   onReset?: () => void
+  className?: string
 }
 
-export default function TimerComponent({ onTimeUpdate, onReset }: TimerComponentProps) {
+export default function TimerComponent({ onTimeUpdate, onReset, className = '' }: TimerComponentProps) {
   const [time, setTime] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
 
@@ -29,15 +30,15 @@ export default function TimerComponent({ onTimeUpdate, onReset }: TimerComponent
     setIsRunning(true)
   }
 
-  const stopTimer = () => {
+  const pauseTimer = () => {
     setIsRunning(false)
   }
 
   const resetTimer = () => {
-    setIsRunning(false)
     setTime(0)
+    setIsRunning(false)
     onTimeUpdate(0)
-    onReset && onReset()
+    onReset?.()
   }
 
   const formatTime = (totalSeconds: number) => {
@@ -47,35 +48,37 @@ export default function TimerComponent({ onTimeUpdate, onReset }: TimerComponent
   }
 
   return (
-    <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
-      <div className="mb-6">
-        <div className="text-8xl font-bold text-center mb-4 tabular-nums font-[var(--font-roboto-mono)]">
+    <div className={`space-y-6 ${className}`}>
+      <div className="text-center">
+        <div className="text-9xl font-bold text-gray-800 tracking-tighter tabular-nums font-[var(--font-roboto-mono)] mb-6">
           {formatTime(time)}
         </div>
-      </div>
-      
-      <div className="flex gap-4 justify-center">
-        {!isRunning ? (
-          <button
-            onClick={startTimer}
-            className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
-          >
-            Start
-          </button>
-        ) : (
-          <button
-            onClick={stopTimer}
-            className="px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors font-medium"
-          >
-            Stop
-          </button>
-        )}
-        <button
-          onClick={resetTimer}
-          className="px-6 py-2 bg-stone-500 text-white rounded-lg hover:bg-stone-600 transition-colors font-medium"
-        >
-          Reset
-        </button>
+        <div className="flex justify-center space-x-4">
+          {!isRunning && time === 0 && (
+            <button
+              onClick={startTimer}
+              className="px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-lg transition-colors"
+            >
+              Start
+            </button>
+          )}
+          {isRunning && (
+            <button
+              onClick={pauseTimer}
+              className="px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 text-lg transition-colors"
+            >
+              Pause
+            </button>
+          )}
+          {(isRunning || time > 0) && (
+            <button
+              onClick={resetTimer}
+              className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 text-lg transition-colors"
+            >
+              Reset
+            </button>
+          )}
+        </div>
       </div>
     </div>
   )
