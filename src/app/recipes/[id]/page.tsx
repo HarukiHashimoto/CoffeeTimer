@@ -1,6 +1,7 @@
 import { recipes } from '@/data/recipes'
 import Link from 'next/link'
 import RecipeDetail from '@/components/RecipeDetail'
+import { Metadata } from 'next'
 
 export function generateStaticParams() {
   return recipes.map((recipe) => ({
@@ -8,7 +9,12 @@ export function generateStaticParams() {
   }))
 }
 
-export default function RecipePage({ params }: { params: { id: string } }) {
+type Props = {
+  params: { id: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export default function RecipePage({ params }: Props) {
   const recipe = recipes.find(r => r.id === params.id)
   if (!recipe) {
     return (
