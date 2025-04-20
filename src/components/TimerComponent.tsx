@@ -50,14 +50,14 @@ export default function TimerComponent({ onTimeUpdate, onReset, className = '' }
   return (
     <div className={`space-y-6 ${className}`}>
       <div className="text-center">
-        <div className="text-9xl font-bold text-gray-800 tracking-tighter tabular-nums font-[var(--font-roboto-mono)] mb-6">
+        <div className="text-8xl font-bold text-gray-800 tracking-tighter tabular-nums font-[var(--font-roboto-mono)] mb-4">
           {formatTime(time)}
         </div>
         <div className="flex justify-center space-x-4">
           {!isRunning && time === 0 && (
             <button
               onClick={startTimer}
-              className="px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-lg transition-colors"
+              className="px-5 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-base transition-colors"
             >
               Start
             </button>
@@ -65,7 +65,7 @@ export default function TimerComponent({ onTimeUpdate, onReset, className = '' }
           {isRunning && (
             <button
               onClick={pauseTimer}
-              className="px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 text-lg transition-colors"
+              className="px-5 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 text-base transition-colors"
             >
               Pause
             </button>
@@ -73,7 +73,7 @@ export default function TimerComponent({ onTimeUpdate, onReset, className = '' }
           {(isRunning || time > 0) && (
             <button
               onClick={resetTimer}
-              className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 text-lg transition-colors"
+              className="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-base transition-colors"
             >
               Reset
             </button>

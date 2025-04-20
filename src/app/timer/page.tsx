@@ -24,29 +24,21 @@ export default function TimerPage() {
     const cumulativeDuration = steps.slice(0, index).reduce((acc, curr) => acc + (curr.duration || 0), 0)
     const stepEndTime = cumulativeDuration + (step.duration || 0)
 
-    let bgColor = 'bg-gray-50'
-    let textColor = 'text-gray-900'
     let progressWidth = '0%'
 
     if (currentTime >= cumulativeDuration && currentTime < stepEndTime) {
-      // 現在のステップ
-      bgColor = 'bg-emerald-100'
-      textColor = 'text-emerald-900'
       progressWidth = `${Math.min(100, ((currentTime - cumulativeDuration) / (stepEndTime - cumulativeDuration)) * 100)}%`
     } else if (currentTime >= stepEndTime) {
-      // 完了したステップ
-      bgColor = 'bg-green-100'
-      textColor = 'text-green-900'
       progressWidth = '100%'
     }
 
-    return { bgColor, textColor, progressWidth }
+    return { progressWidth }
   }
 
   return (
     <div className="container mx-auto px-4 py-4 flex flex-col h-screen">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-3xl font-bold">タイマー</h1>
+        <h1 className="text-3xl font-bold">Timer</h1>
         <Link href="/" className="text-blue-600 hover:underline">
           トップに戻る
         </Link>
@@ -81,12 +73,12 @@ export default function TimerPage() {
 
             <div className="space-y-4">
               {steps.map((step, index) => {
-                const { bgColor, textColor, progressWidth } = getStepBackgroundColor(step, index, currentTime)
+                const { progressWidth } = getStepBackgroundColor(step, index, currentTime)
 
                 return (
                   <div
                     key={index}
-                    className={`relative flex items-center space-x-4 ${bgColor} p-3 rounded-lg overflow-hidden`}
+                    className="relative flex items-center space-x-4 bg-gray-50 p-3 rounded-lg overflow-hidden"
                   >
                     {/* プログレスバー */}
                     <div
@@ -97,7 +89,7 @@ export default function TimerPage() {
                       {index + 1}
                     </div>
                     <div className="flex-grow relative z-10">
-                      <p className={`${textColor} font-medium`}>{step.description}</p>
+                      <p className="text-gray-900 font-medium">{step.description}</p>
                       {step.waterAmount && (
                         <p className="text-sm text-gray-600 mt-1">
                           水量: {step.waterAmount}g
