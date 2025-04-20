@@ -8,11 +8,10 @@ import { useState } from 'react'
 import WaterAmountSelector from '@/components/WaterAmountSelector'
 import { SIMPLE_DRIP_STEPS, OSMOTIC_FLOW_STEPS, calculateRecipeAmounts } from '@/utils/recipeCalculator'
 
-interface Props {
+type Props = {
   params: {
     id: string
-  },
-  searchParams?: { [key: string]: string | string[] | undefined }
+  }
 }
 
 export default function RecipePage({ params }: Props) {
