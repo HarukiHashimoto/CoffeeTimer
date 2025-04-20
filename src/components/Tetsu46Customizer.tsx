@@ -70,7 +70,7 @@ export default function Tetsu46Customizer() {
     }
 
     setSelectedRecipe(customRecipe)
-    router.push('/CoffeeTimer/timer')
+    router.push('/timer')
   }, [totalWater, selectedFirstPour, selectedSecondPour, setSelectedRecipe, router])
 
   return (
