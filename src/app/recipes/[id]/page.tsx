@@ -8,13 +8,7 @@ import { useState } from 'react'
 import WaterAmountSelector from '@/components/WaterAmountSelector'
 import { SIMPLE_DRIP_STEPS, OSMOTIC_FLOW_STEPS, calculateRecipeAmounts } from '@/utils/recipeCalculator'
 
-type Props = {
-  params: {
-    id: string
-  }
-}
-
-export default function RecipePage({ params }: Props) {
+export default function RecipePage({ params }: { params: { id: string } }) {
   const { setSelectedRecipe } = useRecipe()
   const router = useRouter()
   const [waterAmount, setWaterAmount] = useState(300)
