@@ -1,6 +1,10 @@
-'use client'
-
 import { recipes } from '@/data/recipes'
+
+export function generateStaticParams() {
+  return recipes.map((recipe) => ({
+    id: recipe.id,
+  }))
+}
 import Link from 'next/link'
 import RecipeDetail from '@/components/RecipeDetail'
 import Tetsu46Customizer from '@/components/Tetsu46Customizer'
