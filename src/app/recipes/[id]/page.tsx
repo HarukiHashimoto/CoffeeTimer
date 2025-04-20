@@ -10,10 +10,9 @@ export function generateStaticParams() {
 
 type Props = {
   params: { id: string }
-  searchParams: { [key: string]: string | string[] | undefined }
 }
 
-export default function RecipePage({ params, searchParams }: Props) {
+export default function RecipePage({ params }: Props) {
   const recipe = recipes.find(r => r.id === params.id)
   if (!recipe) {
     return (
