@@ -31,7 +31,12 @@ export const recipes: Recipe[] = [
     grindSize: '中粗挽き',
     totalTime: 3.5,
     steps: [
-      { description: '※このレシピは専用ページでカスタマイズできます' }
+      { description: '0:00 60g注ぐ', duration: 45, waterAmount: 60 },
+      { description: '0:45 60g注ぐ', duration: 45, waterAmount: 60 },
+      { description: '1:30 60g注ぐ', duration: 45, waterAmount: 60 },
+      { description: '2:15 60g注ぐ', duration: 30, waterAmount: 60 },
+      { description: '2:45 60g注ぐ', duration: 45, waterAmount: 60 },
+      { description: '3:30 ドリッパーを外す' }
     ],
     image: '/recipes/v60.jpg'
   },

@@ -4,8 +4,17 @@ import TimerComponent from '@/components/TimerComponent'
 import { useRecipe } from '@/contexts/RecipeContext'
 import Link from 'next/link'
 
+import { generateTetsu46Steps } from '@/utils/recipeCalculator'
+
 export default function TimerPage() {
-  const { selectedRecipe } = useRecipe()
+  const { selectedRecipe, tetsu46Params } = useRecipe()
+
+  let steps = selectedRecipe?.steps || []
+  if (selectedRecipe?.id === 'tetsu-4-6') {
+    const totalWater = tetsu46Params?.totalWater || 300
+    steps = generateTetsu46Steps(totalWater)
+  }
+
   return (
     <main className="min-h-screen p-8">
       <h1 className="text-4xl font-bold mb-8">Timer</h1>
@@ -36,20 +45,18 @@ export default function TimerPage() {
           </div>
 
           <div className="space-y-3">
-            {selectedRecipe.steps.map((step, index) => (
+            {steps.map((step, index) => (
               <div key={index} className="flex gap-3 items-start text-sm">
                 <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 text-xs">
-                  {index + 1}
-                </div>
-                <div className="flex-1">
-                  <p className="text-gray-900">{step.description}</p>
-                  <div className="text-xs text-gray-600 space-x-3">
-                    {step.duration && (
-                      <span>{step.duration}秒</span>
-                    )}
-                    {step.waterAmount && (
-                      <span>{step.waterAmount}gのお湯</span>
-                    )}
+                  <div className="flex items-center gap-2">
+                    <span className="inline-block w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 text-center font-bold mr-2">
+                      {index + 1}
+                    </span>
+                    <span>
+                      {`${index + 1}回目:`}
+                      {step.duration ? ` ${step.duration}秒で` : ''}
+                      {step.waterAmount ? `${step.waterAmount}g` : ''}
+                    </span>
                   </div>
                 </div>
               </div>

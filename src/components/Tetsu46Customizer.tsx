@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Pour, firstPours, secondPours, calculatePours } from '@/data/tetsu46Config'
+import { Pour, firstPours, secondPours } from '@/data/tetsu46Config'
 import { Recipe, Step } from '@/types/recipe'
+import { generateTetsu46Steps } from '@/utils/recipeCalculator'
 import { useRecipe } from '@/contexts/RecipeContext'
 import { useRouter } from 'next/navigation'
 
@@ -17,93 +18,25 @@ export default function Tetsu46Customizer() {
   const [secondSteps, setSecondSteps] = useState<Step[]>([])
 
   useEffect(() => {
-    const { firstSteps: newFirstSteps, secondSteps: newSecondSteps } = calculatePours(
-      totalWater,
-      selectedFirstPour,
-      selectedSecondPour
-    )
-
-    setFirstSteps(newFirstSteps.map((step, index) => ({
-      description: `${index + 1}回目の注ぎ`,
-      amount: step.amount,
-      time: step.time,
-    })))
-
-    setSecondSteps(newSecondSteps.map((step, index) => ({
-      description: `${index + firstSteps.length + 1}回目の注ぎ`,
-      amount: step.amount,
-      time: step.time,
-    })))
-
-    // 各ステップの時間を計算
-    let currentTime = 0
-    const formatTime = (seconds: number) => {
-      const minutes = Math.floor(seconds / 60)
-      const remainingSeconds = seconds % 60
-      return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`
-    }
-
-    const steps = [
-      ...firstSteps.map((step, i) => {
-        const stepDescription = `${formatTime(currentTime)} ${i + 1}回目: ${step.amount}gのお湯を注ぐ`
-        currentTime += 45 // 45秒間隔
-        return {
-          description: stepDescription,
-          duration: 10,
-          waterAmount: step.amount
-        }
-      }),
-      ...secondSteps.map((step, i) => {
-        const stepDescription = `${formatTime(currentTime)} ${i + 1}回目: ${step.amount}gのお湯を注ぐ`
-        currentTime += 45 // 45秒間隔
-        return {
-          description: stepDescription,
-          duration: 10,
-          waterAmount: step.amount
-        }
-      }),
-      {
-        description: '03:30 ドリッパーを外す',
-        duration: 10
-      }
-    ]
-
+    // 今後Pourスタイルも反映したい場合はここで拡張
+    const steps = generateTetsu46Steps(totalWater)
     const customRecipe: Recipe = {
       id: 'tetsu-4-6',
       name: `4:6メソッド（${selectedFirstPour.name} × ${selectedSecondPour.name}）`,
       method: 'ハリオV60',
       description: `前半は「${selectedFirstPour.name}（${selectedFirstPour.description}）」、後半は「${selectedSecondPour.name}（${selectedSecondPour.description}）」の組み合わせです。
-
-推奨抽出量：
-コーヒー豆 ${recommendedCoffee}g
-お湯 ${totalWater}g`,
+\n推奨抽出量：\nコーヒー豆 ${recommendedCoffee}g\nお湯 ${totalWater}g`,
       ratio: `1:${(totalWater / recommendedCoffee).toFixed(1)}`,
       grindSize: '中粗挽き',
       totalTime: 3.5,
       steps: steps,
       image: '/recipes/v60.jpg'
     }
-
     setSelectedRecipe(customRecipe)
   }, [totalWater, selectedFirstPour, selectedSecondPour, setSelectedRecipe])
 
   const handleUseRecipe = () => {
-    const { firstSteps: rawFirstSteps, secondSteps: rawSecondSteps } = calculatePours(
-      totalWater,
-      selectedFirstPour,
-      selectedSecondPour
-    )
-
-    const firstSteps = rawFirstSteps.map((step, index) => ({
-      ...step,
-      description: `${index + 1}回目の注ぎ`,
-    }))
-
-    const secondSteps = rawSecondSteps.map((step, index) => ({
-      ...step,
-      description: `${index + firstSteps.length + 1}回目の注ぎ`,
-    }))
-
+    const steps = generateTetsu46Steps(totalWater)
     const customRecipe: Recipe = {
       id: 'tetsu-4-6',
       name: 'Tetsu 4:6 Method',
@@ -112,10 +45,9 @@ export default function Tetsu46Customizer() {
       ratio: `1:${(totalWater / recommendedCoffee).toFixed(1)}`,
       grindSize: 'Medium-coarse',
       totalTime: 3,
-      steps: [...firstSteps, ...secondSteps],
+      steps: steps,
       image: '/recipes/tetsu46.jpg',
     }
-
     setSelectedRecipe(customRecipe)
     setTetsu46Params({
       totalWater,

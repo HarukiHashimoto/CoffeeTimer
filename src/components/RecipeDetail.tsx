@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import WaterAmountSelector from '@/components/WaterAmountSelector'
-import { SIMPLE_DRIP_STEPS, OSMOTIC_FLOW_STEPS, calculateRecipeAmounts } from '@/utils/recipeCalculator'
+import { SIMPLE_DRIP_STEPS, OSMOTIC_FLOW_STEPS, calculateRecipeAmounts, generateTetsu46Steps } from '@/utils/recipeCalculator'
 
 interface Props {
   recipe: Recipe
@@ -42,6 +42,8 @@ export default function RecipeDetail({ recipe }: Props) {
         { description: '02:30 抽出を待つ', duration: 30 },
         { description: '03:00 ドリッパーを外す' }
       ]
+    } else if (baseRecipe.id === 'tetsu-4-6') {
+      steps = generateTetsu46Steps(waterAmount)
     }
 
     return {

@@ -1,18 +1,18 @@
-export type Step = {
-  description: string
-  duration?: number
-  time?: number
-  amount?: number
+export interface Step {
+  description: string;
+  duration?: number;
+  amount?: number;
+  waterAmount?: number;
 }
 
 export interface Recipe {
-  id: string
-  name: string
-  method: string
-  description: string
-  ratio: string
-  grindSize: string
-  totalTime: number // minutes
-  steps: Step[]
-  image: string
+  id: string;
+  name: string;
+  method: string;
+  description: string;
+  ratio: string;
+  grindSize: string;
+  totalTime: number; // minutes
+  steps: Step[];
+  image: string;
 }

@@ -39,3 +39,25 @@ export function calculateRecipeAmounts(totalWater: number, steps: StepRatio[]) {
     totalTime: waterAmounts.reduce((total, step) => total + step.duration, 0)
   }
 }
+
+// 4:6メソッドのステップを湯量から動的生成
+type Tetsu46Step = { description: string; duration?: number; waterAmount?: number }
+export function generateTetsu46Steps(totalWater: number): Tetsu46Step[] {
+  const pourCount = 5
+  const pourAmount = Math.round(totalWater / pourCount)
+  const pourInterval = 45 // 秒
+  const steps: Tetsu46Step[] = []
+  let currentSec = 0
+  for (let i = 0; i < pourCount; i++) {
+    const min = Math.floor(currentSec / 60)
+    const sec = String(currentSec % 60).padStart(2, '0')
+    steps.push({
+      description: `${min}:${sec} ${pourAmount}g注ぐ`,
+      duration: pourInterval,
+      waterAmount: pourAmount
+    })
+    currentSec += pourInterval
+  }
+  steps.push({ description: '3:30 ドリッパーを外す' })
+  return steps
+}
