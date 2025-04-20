@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 
 export default function Tetsu46Customizer() {
   const router = useRouter()
-  const { setSelectedRecipe } = useRecipe()
+  const { setSelectedRecipe, setTetsu46Params } = useRecipe()
   const [totalWater, setTotalWater] = useState(300)
   const [selectedFirstPour, setSelectedFirstPour] = useState<Pour>(firstPours[0])
   const [selectedSecondPour, setSelectedSecondPour] = useState<Pour>(secondPours[0])
@@ -88,6 +88,40 @@ export default function Tetsu46Customizer() {
   }, [totalWater, selectedFirstPour, selectedSecondPour, setSelectedRecipe])
 
   const handleUseRecipe = () => {
+    const { firstSteps: rawFirstSteps, secondSteps: rawSecondSteps } = calculatePours(
+      totalWater,
+      selectedFirstPour,
+      selectedSecondPour
+    )
+
+    const firstSteps = rawFirstSteps.map((step, index) => ({
+      ...step,
+      description: `${index + 1}回目の注ぎ`,
+    }))
+
+    const secondSteps = rawSecondSteps.map((step, index) => ({
+      ...step,
+      description: `${index + firstSteps.length + 1}回目の注ぎ`,
+    }))
+
+    const customRecipe: Recipe = {
+      id: 'tetsu-4-6',
+      name: 'Tetsu 4:6 Method',
+      method: 'Drip',
+      description: `A customized recipe for the Tetsu Kasuya 4:6 method.`,
+      ratio: `1:${(totalWater / recommendedCoffee).toFixed(1)}`,
+      grindSize: 'Medium-coarse',
+      totalTime: 3,
+      steps: [...firstSteps, ...secondSteps],
+      image: '/recipes/tetsu46.jpg',
+    }
+
+    setSelectedRecipe(customRecipe)
+    setTetsu46Params({
+      totalWater,
+      firstPour: selectedFirstPour,
+      secondPour: selectedSecondPour,
+    })
     router.push('/timer')
   }
 
