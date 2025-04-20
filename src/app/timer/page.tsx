@@ -48,29 +48,6 @@ export default function TimerPage() {
 
         {selectedRecipe ? (
           <div className="flex-grow overflow-auto bg-white rounded-lg shadow-md p-4">
-            <div className="grid grid-cols-2 gap-4 text-sm mb-4">
-              <div>
-                <div className="font-medium text-gray-900">Ratio</div>
-                <div className="text-gray-600">{selectedRecipe.ratio}</div>
-              </div>
-              <div>
-                <div className="font-medium text-gray-900">Grind Size</div>
-                <div className="text-gray-600">{selectedRecipe.grindSize}</div>
-              </div>
-              {selectedRecipe.metadata && (
-                <div>
-                  <div className="font-medium text-gray-900">前半のスタイル</div>
-                  <div className="text-gray-600">{firstPourName}</div>
-                </div>
-              )}
-              {selectedRecipe.metadata && (
-                <div>
-                  <div className="font-medium text-gray-900">後半のスタイル</div>
-                  <div className="text-gray-600">{secondPourName}</div>
-                </div>
-              )}
-            </div>
-
             <div className="space-y-4">
               {steps.map((step, index) => {
                 const { progressWidth } = getStepBackgroundColor(step, index, currentTime)
@@ -95,6 +72,31 @@ export default function TimerPage() {
                 )
               })}
             </div>
+            
+            {selectedRecipe && (
+              <div className="mt-4 grid grid-cols-2 gap-4 text-sm border-t pt-4">
+                <div>
+                  <div className="font-medium text-gray-900">Ratio</div>
+                  <div className="text-gray-600">{selectedRecipe.ratio}</div>
+                </div>
+                <div>
+                  <div className="font-medium text-gray-900">Grind Size</div>
+                  <div className="text-gray-600">{selectedRecipe.grindSize}</div>
+                </div>
+                {selectedRecipe.metadata && (
+                  <div>
+                    <div className="font-medium text-gray-900">前半のスタイル</div>
+                    <div className="text-gray-600">{selectedRecipe.metadata.firstPourStyle}</div>
+                  </div>
+                )}
+                {selectedRecipe.metadata && (
+                  <div>
+                    <div className="font-medium text-gray-900">後半のスタイル</div>
+                    <div className="text-gray-600">{selectedRecipe.metadata.secondPourStyle}</div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         ) : (
           <div className="mt-8 text-center">
