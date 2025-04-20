@@ -8,11 +8,7 @@ export function generateStaticParams() {
   }))
 }
 
-interface PageProps {
-  params: { id: string }
-}
-
-export default function RecipePage({ params }: PageProps) {
+export default function RecipePage({ params }: { params: { id: string } }) {
   const recipe = recipes.find(r => r.id === params.id)
   if (!recipe) {
     return (
