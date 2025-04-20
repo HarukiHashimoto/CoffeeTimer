@@ -2,7 +2,12 @@
 
 import { useState, useEffect } from 'react'
 
-export default function TimerComponent() {
+interface TimerComponentProps {
+  onTimeUpdate: (time: number) => void
+  onReset?: () => void
+}
+
+export default function TimerComponent({ onTimeUpdate, onReset }: TimerComponentProps) {
   const [time, setTime] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
 
@@ -11,12 +16,14 @@ export default function TimerComponent() {
 
     if (isRunning) {
       interval = setInterval(() => {
-        setTime(prev => prev + 1)
+        const newTime = time + 1
+        setTime(newTime)
+        onTimeUpdate(newTime)
       }, 1000)
     }
 
     return () => clearInterval(interval)
-  }, [isRunning])
+  }, [isRunning, time, onTimeUpdate])
 
   const startTimer = () => {
     setIsRunning(true)
@@ -29,6 +36,8 @@ export default function TimerComponent() {
   const resetTimer = () => {
     setIsRunning(false)
     setTime(0)
+    onTimeUpdate(0)
+    onReset && onReset()
   }
 
   const formatTime = (totalSeconds: number) => {

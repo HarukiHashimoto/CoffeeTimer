@@ -24,7 +24,10 @@ const RecipeContext = createContext<RecipeContextType>({
   setTetsu46Params: () => {},
 })
 
+import { recipes } from '@/data/recipes'
+
 export function RecipeProvider({ children }: { children: ReactNode }) {
+  // デフォルトレシピをnullに設定
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null)
   const [tetsu46Params, setTetsu46Params] = useState<Tetsu46Params | null>(null)
 

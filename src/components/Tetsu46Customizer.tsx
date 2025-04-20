@@ -1,11 +1,18 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Pour, firstPours, secondPours } from '@/data/tetsu46Config'
-import { Recipe, Step } from '@/types/recipe'
+import { Pour, firstPours, secondPours, calculatePours } from '@/data/tetsu46Config'
+import { Recipe, Step, Pour as RecipePour } from '@/types/recipe'
 import { generateTetsu46Steps } from '@/utils/recipeCalculator'
 import { useRecipe } from '@/contexts/RecipeContext'
 import { useRouter } from 'next/navigation'
+
+// 秒数を00:00形式にフォーマット
+const formatTime = (totalSeconds: number): string => {
+  const minutes = Math.floor(totalSeconds / 60)
+  const seconds = totalSeconds % 60
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+}
 
 export default function Tetsu46Customizer() {
   const router = useRouter()
@@ -14,18 +21,41 @@ export default function Tetsu46Customizer() {
   const [selectedFirstPour, setSelectedFirstPour] = useState<Pour>(firstPours[0])
   const [selectedSecondPour, setSelectedSecondPour] = useState<Pour>(secondPours[0])
   const recommendedCoffee = Math.round(totalWater / 15) // 1:15の抽出比率
-  const [firstSteps, setFirstSteps] = useState<Step[]>([])
-  const [secondSteps, setSecondSteps] = useState<Step[]>([])
+  const [steps, setSteps] = useState<Step[]>([])
+  const [firstPourSteps, setFirstPourSteps] = useState<{ amount: number, time: number, cumulativeTime: number }[]>([])
+  const [secondPourSteps, setSecondPourSteps] = useState<{ amount: number, time: number, cumulativeTime: number }[]>([])
 
   useEffect(() => {
-    // 今後Pourスタイルも反映したい場合はここで拡張
-    const steps = generateTetsu46Steps(totalWater)
+    // calculatePoursを使用してステップを動的に生成
+    const { firstSteps, secondSteps } = calculatePours(totalWater, selectedFirstPour, selectedSecondPour)
+
+    setFirstPourSteps(firstSteps)
+    setSecondPourSteps(secondSteps)
+
+    // 注ぎ時間と量を反映したステップを生成
+    const dynamicSteps: Step[] = [
+      ...firstSteps.map((step, index) => ({
+        description: `${index + 1}回目: ${step.amount}g注ぐ`,
+        duration: step.time,
+        waterAmount: step.amount
+      })),
+      ...secondSteps.map((step, index) => ({
+        description: `${firstSteps.length + index + 1}回目: ${step.amount}g注ぐ`,
+        duration: step.time,
+        waterAmount: step.amount
+      })),
+      { description: '3:30 ドリッパーを外す' }
+    ]
+
+    setSteps(dynamicSteps)
+
     const customRecipe: Recipe = {
       id: 'tetsu-4-6',
       name: `4:6メソッド（${selectedFirstPour.name} × ${selectedSecondPour.name}）`,
       method: 'ハリオV60',
       description: `前半は「${selectedFirstPour.name}（${selectedFirstPour.description}）」、後半は「${selectedSecondPour.name}（${selectedSecondPour.description}）」の組み合わせです。
-\n推奨抽出量：\nコーヒー豆 ${recommendedCoffee}g\nお湯 ${totalWater}g`,
+\n推奨抽出量：\nコーヒー豆 ${recommendedCoffee}g\nお湯 ${totalWater}g
+\n抽出完了時間: 03:30`,
       ratio: `1:${(totalWater / recommendedCoffee).toFixed(1)}`,
       grindSize: '中粗挽き',
       totalTime: 3.5,
@@ -33,27 +63,55 @@ export default function Tetsu46Customizer() {
       image: '/recipes/v60.jpg'
     }
     setSelectedRecipe(customRecipe)
-  }, [totalWater, selectedFirstPour, selectedSecondPour, setSelectedRecipe])
+    setSteps(steps)
+  }, [totalWater, selectedFirstPour, selectedSecondPour, setSelectedRecipe, recommendedCoffee])
 
   const handleUseRecipe = () => {
-    const steps = generateTetsu46Steps(totalWater)
+    // calculatePoursを使用してステップを動的に生成
+    const { firstSteps, secondSteps } = calculatePours(totalWater, selectedFirstPour, selectedSecondPour)
+
+    // 注ぎ時間と量を反映したステップを生成
+    const dynamicSteps: Step[] = [
+      ...firstSteps.map((step, index) => ({
+        description: `${formatTime(step.cumulativeTime)} ${step.amount}g注ぐ`,
+        duration: step.time,
+        waterAmount: step.amount
+      })),
+      ...secondSteps.map((step, index) => ({
+        description: `${formatTime(firstSteps[firstSteps.length - 1].cumulativeTime + step.cumulativeTime)} ${step.amount}g注ぐ`,
+        duration: step.time,
+        waterAmount: step.amount
+      })),
+      { description: '3:30 ドリッパーを外す' }
+    ]
+
+    const customRecipeId = `custom-tetsu-4-6-${Date.now()}`
     const customRecipe: Recipe = {
-      id: 'tetsu-4-6',
-      name: 'Tetsu 4:6 Method',
-      method: 'Drip',
-      description: `A customized recipe for the Tetsu Kasuya 4:6 method.`,
+      id: customRecipeId,
+      name: `4:6メソッド（${selectedFirstPour.name} × ${selectedSecondPour.name}）`,
+      method: 'ハリオ V60',
+      description: `前半は「${selectedFirstPour.name}（${selectedFirstPour.description}）」、後半は「${selectedSecondPour.name}（${selectedSecondPour.description}）」の組み合わせです。
+推全抽出量：
+コーヒー豆 ${recommendedCoffee}g
+お湯 ${totalWater}g
+抽出完了時間: 03:30`,
       ratio: `1:${(totalWater / recommendedCoffee).toFixed(1)}`,
-      grindSize: 'Medium-coarse',
-      totalTime: 3,
-      steps: steps,
+      grindSize: '中粗挽き',
+      totalTime: 3.5,
+      steps: dynamicSteps,
       image: '/recipes/tetsu46.jpg',
+      metadata: {
+        firstPour: selectedFirstPour,
+        secondPour: selectedSecondPour
+      }
     }
     setSelectedRecipe(customRecipe)
     setTetsu46Params({
       totalWater,
       firstPour: selectedFirstPour,
-      secondPour: selectedSecondPour,
+      secondPour: selectedSecondPour
     })
+    // タイマーページに遷移
     router.push('/timer')
   }
 
@@ -64,12 +122,19 @@ export default function Tetsu46Customizer() {
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Total Water (g)
           </label>
-          <input
-            type="number"
-            value={totalWater}
-            onChange={(e) => setTotalWater(parseInt(e.target.value))}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-          />
+          <div className="flex items-center space-x-4">
+            <input
+              type="range"
+              min="200"
+              max="500"
+              step="10"
+              value={totalWater}
+              onChange={(e) => setTotalWater(Number(e.target.value))}
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+              suppressHydrationWarning
+            />
+            <span className="text-sm font-medium text-gray-700">{totalWater}g</span>
+          </div>
         </div>
 
         <div>
@@ -131,35 +196,65 @@ export default function Tetsu46Customizer() {
       </div>
 
       <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-semibold mb-4">Current Recipe</h2>
-        <div className="space-y-4">
-          <div>
-            <h3 className="font-medium">抽出比率</h3>
-            <p>1:{(totalWater / recommendedCoffee).toFixed(1)}</p>
+        <h2 className="text-2xl font-bold mb-6 text-emerald-800 border-b-2 border-emerald-300 pb-2">Current Recipe</h2>
+        <div className="space-y-6">
+          <div className="bg-gray-50 rounded-lg p-4">
+            <h3 className="font-semibold text-emerald-700 mb-2">抽出比率</h3>
+            <p className="text-xl font-mono text-emerald-900">1:{(totalWater / recommendedCoffee).toFixed(1)}</p>
           </div>
-          <div>
-            <h3 className="font-medium">推奨抽出量</h3>
-            <p>コーヒー豆: {recommendedCoffee}g</p>
-            <p>お湯: {totalWater}g</p>
+          <div className="bg-white rounded-lg shadow-md p-4">
+            <h3 className="font-semibold text-emerald-700 mb-2">推奨抽出量</h3>
+            <div className="flex justify-between">
+              <span>コーヒー豆:</span>
+              <span className="font-mono text-emerald-900">{recommendedCoffee}g</span>
+            </div>
+            <div className="flex justify-between mt-1">
+              <span>お湯:</span>
+              <span className="font-mono text-emerald-900">{totalWater}g</span>
+            </div>
           </div>
-          <div>
-            <h3 className="font-medium">注ぎ方</h3>
-            <p>前半: {selectedFirstPour.name}（{selectedFirstPour.description}）</p>
-            <p>後半: {selectedSecondPour.name}（{selectedSecondPour.description}）</p>
+          <div className="bg-white rounded-lg shadow-md p-4">
+            <h3 className="font-semibold text-emerald-700 mb-2">注ぎ方</h3>
+            <div className="flex justify-between">
+              <span>前半:</span>
+              <span className="text-emerald-900">{selectedFirstPour.name}（{selectedFirstPour.description}）</span>
+            </div>
+            <div className="flex justify-between mt-1">
+              <span>後半:</span>
+              <span className="text-emerald-900">{selectedSecondPour.name}（{selectedSecondPour.description}）</span>
+            </div>
           </div>
-          <div>
-            <h3 className="font-medium">注ぎ時間</h3>
+          <div className="bg-white rounded-lg shadow-md p-4">
+            <h3 className="text-lg font-semibold text-emerald-700 mb-4">注ぎステップ</h3>
             <div className="space-y-2">
-              {firstSteps.map((step, index) => (
-                <p key={`first-${index}`}>
-                  {index + 1}回目: {step.time}秒で{step.amount}g
-                </p>
-              ))}
-              {secondSteps.map((step, index) => (
-                <p key={`second-${index}`}>
-                  {index + firstSteps.length + 1}回目: {step.time}秒で{step.amount}g
-                </p>
-              ))}
+              <div>
+                <h4 className="font-medium text-emerald-600 mb-2">前半のステップ</h4>
+                {firstPourSteps.map((step, index) => (
+                  <div key={index} className="mb-1">
+                    <p className="font-mono">
+                      <span className="text-emerald-900">{formatTime(step.cumulativeTime)} {step.amount}g注ぐ</span>
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <div>
+                <h4 className="font-medium text-emerald-600 mb-2">後半のステップ</h4>
+                {secondPourSteps.map((step, index) => (
+                  <div key={index} className="mb-1">
+                    <p className="font-mono">
+                      <span className="text-emerald-900">{formatTime(step.cumulativeTime)} {step.amount}g注ぐ</span>
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="bg-white rounded-lg shadow-md p-4">
+            <h3 className="text-lg font-semibold text-emerald-700 mb-4">抽出完了</h3>
+            <div className="mb-1">
+              <p className="font-mono">
+                <span className="text-emerald-900">03:30 ドリッパーを外す</span>
+              </p>
             </div>
           </div>
         </div>

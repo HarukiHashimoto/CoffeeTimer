@@ -40,9 +40,10 @@ export const secondPours: Pour[] = [
   }
 ]
 
-interface PourStep {
+export interface PourStep {
   amount: number
   time: number
+  cumulativeTime: number
 }
 
 interface CalculatePoursResult {
@@ -54,15 +55,18 @@ interface CalculatePoursResult {
 export function calculatePours(totalWater: number, firstPour: Pour, secondPour: Pour): CalculatePoursResult {
   const firstPart = totalWater * 0.4  // 全体の40%
   const secondPart = totalWater * 0.6  // 全体の60%
+  const stepTime = 45  // 4:6メソッドの標準注ぎ時間
   
-  const firstSteps = firstPour.ratios.map(ratio => ({
+  const firstSteps = firstPour.ratios.map((ratio, index) => ({
     amount: Math.round(firstPart * ratio),
-    time: 30
+    time: stepTime,
+    cumulativeTime: index * stepTime  // 経過時間を計算
   }))
 
-  const secondSteps = secondPour.ratios.map(ratio => ({
+  const secondSteps = secondPour.ratios.map((ratio, index) => ({
     amount: Math.round(secondPart * ratio),
-    time: 30
+    time: stepTime,
+    cumulativeTime: (firstSteps.length + index) * stepTime  // 経過時間を計算
   }))
 
   return {

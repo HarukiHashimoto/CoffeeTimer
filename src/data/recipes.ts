@@ -8,7 +8,7 @@ export const recipes: Recipe[] = [
     description:
       'A classic pour-over method using the Hario V60 dripper. Known for its clean and bright cup profile.',
     ratio: '1:15',
-    grindSize: '中挨き',
+    grindSize: '中粗挽き',
     totalTime: 2.5,
     steps: [
       { description: '事前準備', duration: 30 },
@@ -24,7 +24,7 @@ export const recipes: Recipe[] = [
   },
   {
     id: 'tetsu-4-6',
-    name: 'テツ式4:6メソッド',
+    name: '4:6メソッド',
     method: 'ハリオV60',
     description: '粕谷哲氏考案の4:6メソッド。お好みに合わせて抽出方法をカスタマイズできます。',
     ratio: '1:15（カスタマイズ可能）',

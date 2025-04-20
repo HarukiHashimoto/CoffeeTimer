@@ -13,13 +13,34 @@ interface Props {
 }
 
 export default function RecipeDetail({ recipe }: Props) {
-  const { setSelectedRecipe } = useRecipe()
+  console.log('🔍 RecipeDetail Component Rendered', { recipe })
+  const { selectedRecipe, setSelectedRecipe } = useRecipe()
   const router = useRouter()
   const [waterAmount, setWaterAmount] = useState(300)
+
+  // ContextのselectedRecipeがあればそれを優先、なければprops.recipe
+  const recipeToShow = selectedRecipe || recipe
+  
+  // デバッグ用：recipeToShowの内容をコンソールに出力
+  console.log('🔍 Debug - recipeToShow:', {
+    id: recipeToShow.id,
+    name: recipeToShow.name,
+    steps: recipeToShow.steps?.length,
+    selectedRecipe: selectedRecipe ? selectedRecipe.id : 'null',
+    propsRecipe: recipe.id
+  })
+
+  // レシピが存在しない場合のエラーハンドリング
+  if (!recipeToShow) {
+    return <div>レシピが見つかりませんでした</div>
+  }
 
   // レシピに基づいて水量の計算を行う
   const calculateRecipe = (baseRecipe: Recipe) => {
     let steps = [...(baseRecipe.steps || [])]
+    
+    // デバッグ用：baseRecipeの内容をコンソールに出力
+    console.log('Debug - baseRecipe:', JSON.stringify(baseRecipe, null, 2))
     const coffee = Math.round(waterAmount / 15)
 
     if (baseRecipe.id === 'basic-drip') {
@@ -53,7 +74,10 @@ export default function RecipeDetail({ recipe }: Props) {
     }
   }
 
-  const currentRecipe = calculateRecipe(recipe)
+  const currentRecipe = calculateRecipe(recipeToShow)
+  
+  // デバッグ用：currentRecipeの内容をコンソールに出力
+  console.log('Debug - currentRecipe:', JSON.stringify(currentRecipe, null, 2))
 
   return (
     <main className="min-h-screen p-8 max-w-4xl mx-auto">
@@ -102,10 +126,14 @@ export default function RecipeDetail({ recipe }: Props) {
 
         <div>
           <h2 className="text-lg font-medium mb-2">Steps</h2>
+          <p>Total Steps: {currentRecipe.steps.length}</p>
           <ol className="list-decimal list-inside space-y-2">
             {currentRecipe.steps.map((step, index) => (
-              <li key={index} className="pl-2">
-                {step.description}
+              <li key={index} className="pl-2 whitespace-pre-line">
+                <div style={{color: '#888', fontSize: '0.8em'}}>
+                  Debug: {JSON.stringify(step)}
+                </div>
+                <span>{step.description}</span>
               </li>
             ))}
           </ol>

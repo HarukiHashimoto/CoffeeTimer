@@ -15,4 +15,14 @@ export interface Recipe {
   totalTime: number; // minutes
   steps: Step[];
   image: string;
+  metadata?: {
+    firstPour?: Pour;
+    secondPour?: Pour;
+  };
+}
+
+export interface Pour {
+  name: string;
+  description: string;
+  // その他のPourに関連するプロパティ
 }

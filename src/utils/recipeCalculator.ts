@@ -45,7 +45,7 @@ type Tetsu46Step = { description: string; duration?: number; waterAmount?: numbe
 export function generateTetsu46Steps(totalWater: number): Tetsu46Step[] {
   const pourCount = 5
   const pourAmount = Math.round(totalWater / pourCount)
-  const pourInterval = 45 // 秒
+  const pourInterval = 45 // 4:6メソッドの標準注ぎ時間（秒）
   const steps: Tetsu46Step[] = []
   let currentSec = 0
   for (let i = 0; i < pourCount; i++) {
