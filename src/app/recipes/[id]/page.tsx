@@ -1,6 +1,7 @@
 import { recipes } from '@/data/recipes'
 import Link from 'next/link'
 import RecipeDetail from '@/components/RecipeDetail'
+import { redirect } from 'next/navigation'
 
 export function generateStaticParams() {
   return recipes.map((recipe) => ({
@@ -8,7 +9,12 @@ export function generateStaticParams() {
   }))
 }
 
-export default function RecipePage({ params }: { params: { id: string } }) {
+type Props = {
+  params: { id: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export default function RecipePage({ params }: Props) {
   const recipe = recipes.find(r => r.id === params.id)
   if (!recipe) {
     return (
@@ -19,6 +25,11 @@ export default function RecipePage({ params }: { params: { id: string } }) {
         </Link>
       </main>
     )
+  }
+
+  // テツ式4:6メソッドの場合は直接カスタマイズページにリダイレクト
+  if (recipe.id === 'tetsu-4-6') {
+    redirect('/recipes/tetsu-4-6')
   }
 
   return <RecipeDetail recipe={recipe} />
