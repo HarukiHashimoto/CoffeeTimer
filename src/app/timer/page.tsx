@@ -78,23 +78,18 @@ export default function TimerPage() {
                 return (
                   <div
                     key={index}
-                    className="relative flex items-center space-x-4 bg-gray-50 p-3 rounded-lg overflow-hidden"
+                    className="relative flex items-center space-x-3 bg-gray-50 p-2 rounded-lg overflow-hidden"
                   >
                     {/* プログレスバー */}
                     <div
                       className="absolute left-0 top-0 h-full bg-emerald-200 opacity-50 transition-all duration-300"
                       style={{ width: progressWidth }}
                     />
-                    <div className="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 font-mono font-bold relative z-10">
+                    <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 font-mono text-sm font-bold relative z-10">
                       {index + 1}
                     </div>
                     <div className="flex-grow relative z-10">
-                      <p className="text-gray-900 font-medium">{step.description}</p>
-                      {step.waterAmount && (
-                        <p className="text-sm text-gray-600 mt-1">
-                          水量: {step.waterAmount}g
-                        </p>
-                      )}
+                      <p className="text-gray-900 text-sm font-medium">{step.description}</p>
                     </div>
                   </div>
                 )
