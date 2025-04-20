@@ -70,8 +70,11 @@ export default function Tetsu46Customizer() {
     }
 
     setSelectedRecipe(customRecipe)
+  }, [totalWater, selectedFirstPour, selectedSecondPour, setSelectedRecipe])
+
+  const handleUseRecipe = () => {
     router.push('/timer')
-  }, [totalWater, selectedFirstPour, selectedSecondPour, setSelectedRecipe, router])
+  }
 
   return (
     <div className="space-y-6 bg-white rounded-lg shadow-md p-6">
