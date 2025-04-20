@@ -24,15 +24,17 @@ export default function TimerPage() {
     const cumulativeDuration = steps.slice(0, index).reduce((acc, curr) => acc + (curr.duration || 0), 0)
     const stepEndTime = cumulativeDuration + (step.duration || 0)
 
-    let bgColor = 'bg-gray-100'
+    let bgColor = 'bg-gray-50'
     let textColor = 'text-gray-900'
     let progressWidth = '0%'
 
     if (currentTime >= cumulativeDuration && currentTime < stepEndTime) {
+      // 現在のステップ
       bgColor = 'bg-emerald-100'
       textColor = 'text-emerald-900'
       progressWidth = `${Math.min(100, ((currentTime - cumulativeDuration) / (stepEndTime - cumulativeDuration)) * 100)}%`
     } else if (currentTime >= stepEndTime) {
+      // 完了したステップ
       bgColor = 'bg-green-100'
       textColor = 'text-green-900'
       progressWidth = '100%'
@@ -77,25 +79,30 @@ export default function TimerPage() {
               )}
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               {steps.map((step, index) => {
                 const { bgColor, textColor, progressWidth } = getStepBackgroundColor(step, index, currentTime)
 
                 return (
                   <div
                     key={index}
-                    className={`p-3 rounded-lg transition-colors duration-300 ${bgColor} ${textColor}`}
+                    className={`relative flex items-center space-x-4 ${bgColor} p-3 rounded-lg overflow-hidden`}
                   >
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium text-sm">{step.description}</span>
-                      <div className="w-1/3 bg-gray-200 rounded-full h-2">
-                        <div
-                          className="bg-blue-600 h-2 rounded-full"
-                          style={{
-                            width: progressWidth,
-                          }}
-                        ></div>
-                      </div>
+                    {/* プログレスバー */}
+                    <div
+                      className="absolute left-0 top-0 h-full bg-emerald-200 opacity-50 transition-all duration-300"
+                      style={{ width: progressWidth }}
+                    />
+                    <div className="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 font-mono font-bold relative z-10">
+                      {index + 1}
+                    </div>
+                    <div className="flex-grow relative z-10">
+                      <p className={`${textColor} font-medium`}>{step.description}</p>
+                      {step.waterAmount && (
+                        <p className="text-sm text-gray-600 mt-1">
+                          水量: {step.waterAmount}g
+                        </p>
+                      )}
                     </div>
                   </div>
                 )
