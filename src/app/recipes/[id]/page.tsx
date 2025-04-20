@@ -1,7 +1,6 @@
 import { recipes } from '@/data/recipes'
 import Link from 'next/link'
 import RecipeDetail from '@/components/RecipeDetail'
-import { Metadata } from 'next'
 
 export function generateStaticParams() {
   return recipes.map((recipe) => ({
