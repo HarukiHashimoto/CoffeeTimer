@@ -8,6 +8,12 @@ import { useState } from 'react'
 import WaterAmountSelector from '@/components/WaterAmountSelector'
 import { SIMPLE_DRIP_STEPS, OSMOTIC_FLOW_STEPS, calculateRecipeAmounts } from '@/utils/recipeCalculator'
 
+export function generateStaticParams() {
+  return recipes.map((recipe) => ({
+    id: recipe.id,
+  }))
+}
+
 export default function RecipePage({ params }: { params: { id: string } }) {
   const { setSelectedRecipe } = useRecipe()
   const router = useRouter()
