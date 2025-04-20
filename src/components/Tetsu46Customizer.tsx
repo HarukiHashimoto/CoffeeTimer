@@ -78,7 +78,7 @@ export default function Tetsu46Customizer() {
         waterAmount: step.amount
       })),
       ...secondSteps.map((step, index) => ({
-        description: `${formatTime(firstSteps[firstSteps.length - 1].cumulativeTime + step.cumulativeTime)} ${step.amount}g注ぐ`,
+        description: `${formatTime(step.cumulativeTime)} ${step.amount}g注ぐ`,
         duration: step.time,
         waterAmount: step.amount
       })),

@@ -63,10 +63,12 @@ export function calculatePours(totalWater: number, firstPour: Pour, secondPour: 
     cumulativeTime: index * stepTime  // 経過時間を計算
   }))
 
+  const firstTotalTime = firstSteps.reduce((sum, step) => sum + step.time, 0)
+
   const secondSteps = secondPour.ratios.map((ratio, index) => ({
     amount: Math.round(secondPart * ratio),
     time: stepTime,
-    cumulativeTime: (firstSteps.length + index) * stepTime  // 経過時間を計算
+    cumulativeTime: firstTotalTime + index * stepTime  // 経過時間を正確に計算
   }))
 
   return {
