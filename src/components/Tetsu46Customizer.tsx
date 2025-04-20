@@ -133,12 +133,12 @@ export default function Tetsu46Customizer() {
               className="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer"
               suppressHydrationWarning
             />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{totalWater}g</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-100">{totalWater}g</span>
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-1">
             First Pour Style (40%)
           </label>
           <select
