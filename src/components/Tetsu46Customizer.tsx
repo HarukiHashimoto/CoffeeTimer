@@ -117,7 +117,7 @@ export default function Tetsu46Customizer() {
 
   return (
     <div className="space-y-8">
-      <div className="space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 text-gray-900 dark:text-white">
+      <div className="space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 text-gray-900">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Total Water (g)
@@ -133,12 +133,12 @@ export default function Tetsu46Customizer() {
               className="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer"
               suppressHydrationWarning
             />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-100">{totalWater}g</span>
+            <span className="text-sm font-medium text-gray-700">{totalWater}g</span>
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-700 mb-1">
             First Pour Style (40%)
           </label>
           <select
