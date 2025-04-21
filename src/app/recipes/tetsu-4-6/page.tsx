@@ -36,13 +36,13 @@ export default function Tetsu46Page() {
         <Tetsu46Customizer onRecipeChange={setCurrentRecipe} />
 
         {currentRecipe && (
-          <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
+          <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6 space-y-6">
             <button
               onClick={() => {
                 setSelectedRecipe(currentRecipe)
                 router.push('/timer')
               }}
-              className="w-full bg-emerald-600 text-white py-3 rounded-lg hover:bg-emerald-700 transition-colors font-medium"
+              className="w-full bg-emerald-600 dark:bg-emerald-700 text-white py-3 rounded-lg hover:bg-emerald-700 dark:hover:bg-emerald-800 transition-colors font-medium"
             >
               Use This Recipe
             </button>
