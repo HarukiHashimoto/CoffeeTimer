@@ -2,6 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    background-color: theme('colors.light-bg');
+    color: theme('colors.light-text');
+  }
+  .dark body {
+    background-color: theme('colors.dark-bg');
+    color: theme('colors.dark-text');
+  }
+  .content-container {
+    background-color: theme('colors.light-surface');
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+  }
+  .dark .content-container {
+    background-color: theme('colors.dark-surface');
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+  }
+  h1, h2, h3 {
+    color: theme('colors.light-primary');
+    font-weight: 600;
+  }
+  .dark h1, .dark h2, .dark h3 {
+    color: theme('colors.dark-primary');
+    font-weight: 600;
+  }
+  a {
+    color: theme('colors.light-secondary');
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  .dark a {
+    color: theme('colors.dark-secondary');
+  }
+  .dark a:hover {
+    text-decoration: underline;
+  }
+  p {
+    line-height: 1.625;
+  }
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
