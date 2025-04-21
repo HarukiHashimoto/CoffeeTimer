@@ -52,7 +52,7 @@ export default function TimerPage() {
         <TimerComponent onTimeUpdate={setCurrentTime} onReset={handleResetTimer} className="mb-4" />
 
         {selectedRecipe ? (
-          <div className="flex-grow overflow-auto bg-white rounded-lg shadow-md p-4">
+          <div className="flex-grow overflow-auto bg-white rounded-lg shadow-md p-4 dark:bg-gray-300">
             <div className="space-y-4">
               {steps.map((step, index) => {
                 const { progressWidth } = getStepBackgroundColor(step, index, currentTime)
@@ -77,7 +77,7 @@ export default function TimerPage() {
                 )
               })}
             </div>
-            
+
             {selectedRecipe && selectedRecipe.metadata && (
               <div className="mt-4 flex space-x-4 text-sm border-t pt-4">
                 <div className="flex-1 flex items-center space-x-3 bg-gray-100 p-2 rounded-lg">

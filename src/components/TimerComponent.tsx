@@ -50,7 +50,7 @@ export default function TimerComponent({ onTimeUpdate, onReset, className = '' }
   return (
     <div className={`space-y-6 ${className}`}>
       <div className="text-center">
-        <div className="text-8xl font-bold text-gray-800 tracking-tighter tabular-nums font-[var(--font-roboto-mono)] mb-4">
+        <div className="text-8xl font-bold text-gray-800 tracking-tighter tabular-nums font-[var(--font-roboto-mono)] mb-4 dark:text-gray-200">
           {formatTime(time)}
         </div>
         <div className="flex justify-center space-x-4">

@@ -210,7 +210,7 @@ export default function Tetsu46Customizer() {
             <p className="text-xl font-mono text-emerald-900 dark:text-emerald-300">1:{(totalWater / recommendedCoffee).toFixed(1)}</p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
-            <h3 className="font-semibold text-emerald-700 dark:text-emerald-400 mb-2">推奨抽出量</h3>
+            <h3 className="font-semibold text-emerald-700 dark:text-emerald-400 mb-2">推奨量</h3>
             <div className="flex justify-between">
               <span className="text-gray-700 dark:text-gray-300">コーヒー豆:</span>
               <span className="font-mono text-emerald-900 dark:text-emerald-300">{recommendedCoffee}g</span>
@@ -226,17 +226,21 @@ export default function Tetsu46Customizer() {
               <span className="text-gray-700 dark:text-gray-300">前半:</span>
               <span className="text-emerald-900 dark:text-emerald-300">{selectedFirstPour.name}（{selectedFirstPour.description}）</span>
             </div>
+            <div className="flex justify-between">
+              <span className="text-gray-700 dark:text-gray-300">後半:</span>
+              <span className="text-emerald-900 dark:text-emerald-300">{selectedSecondPour.name}（{selectedSecondPour.description}）</span>
+            </div>
           </div>
           <div className="space-y-2">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
-              <h3 className="text-lg font-semibold text-emerald-700 dark:text-emerald-400 mb-4">注げステップ</h3>
+              <h3 className="text-lg font-semibold text-emerald-700 dark:text-emerald-400 mb-4">注ぎステップ</h3>
               <div className="space-y-2">
                 <div>
                   <h4 className="font-medium text-emerald-600 dark:text-emerald-500 mb-2">前半のステップ</h4>
                   {firstPourSteps.map((step, index) => (
                     <div key={index} className="mb-1">
                       <p className="font-mono">
-                        <span className="text-emerald-900 dark:text-emerald-300">{formatTime(step.cumulativeTime)} {step.amount}g注ぐ</span>
+                        <span className="text-emerald-900 dark:text-gray-100">{formatTime(step.cumulativeTime)} - {step.amount}g注ぐ</span>
                       </p>
                     </div>
                   ))}
@@ -246,7 +250,7 @@ export default function Tetsu46Customizer() {
                   {secondPourSteps.map((step, index) => (
                     <div key={index} className="mb-1">
                       <p className="font-mono">
-                        <span className="text-emerald-900 dark:text-emerald-300">{formatTime(step.cumulativeTime)} {step.amount}g注ぐ</span>
+                        <span className="text-emerald-900 dark:text-gray-100">{formatTime(step.cumulativeTime)} - {step.amount}g注ぐ</span>
                       </p>
                     </div>
                   ))}
@@ -258,7 +262,7 @@ export default function Tetsu46Customizer() {
             <h3 className="text-lg font-semibold text-emerald-700 dark:text-emerald-400 mb-4">抽出完了</h3>
             <div className="mb-1">
               <p className="font-mono">
-                <span className="text-emerald-900 dark:text-emerald-300">03:30 ドリッパーを外す</span>
+                <span className="text-emerald-900 dark:text-gray-100">03:30 - ドリッパーを外す</span>
               </p>
             </div>
           </div>
