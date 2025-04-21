@@ -20,7 +20,8 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={`${inter.className} ${robotoMono.variable} bg-light-bg dark:bg-dark-bg`}>
-        <div className="fixed top-4 right-4 z-50">
+        <div className="fixed top-4 right-4 z-50 flex space-x-2">
+          <div id="back-button-container"></div>
           <ThemeToggle />
         </div>
         <RecipeProvider>

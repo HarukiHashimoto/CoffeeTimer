@@ -9,11 +9,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'dark-bg': '#1E1E1E',
+        'dark-bg': '#121212',
         'dark-text': '#E0E0E0',
         'dark-primary': '#4CAF50',
         'dark-secondary': '#2196F3',
-        'dark-surface': '#2C2C2C',
+        'dark-surface': '#1E1E1E',
+        'dark-surface-secondary': '#2C2C2C',
         'light-bg': '#F5F5F5',
         'light-text': '#2C2C2C',
         'light-primary': '#2E7D32',

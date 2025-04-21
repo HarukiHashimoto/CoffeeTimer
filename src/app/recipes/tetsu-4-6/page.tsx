@@ -17,18 +17,18 @@ export default function Tetsu46Page() {
       <Link href="/recipes" className="text-blue-600 hover:underline mb-4 inline-block">
         ← Back to recipes
       </Link>
-      
+
       <h1 className="text-4xl font-bold mb-6">4:6メソッド カスタマイズ</h1>
-      
+
       <div className="space-y-8">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-4">4:6メソッドについて</h2>
-          <p className="text-gray-600 mb-4">
-            粕谷哲氏が考案した4:6メソッドは、ドリップコーヒーの抽出を前半40%と後半60%に分け、
-            それぞれの注ぎ方を変えることで味わいをコントロールする手法です。
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
+          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-200">4:6メソッドについて</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            粋谷哲氏が考案した4:6メソッドは、ドリップコーヒーの抽出を前半40%と後半60%に分け、
+            それぞれの注ぐ方を変えることで味わいをコントロールする手法です。
           </p>
-          <p className="text-gray-600">
-            前半の注ぎ方で酸味と甘みのバランスを、後半の注ぎ方でコクの強さを調整できます。
+          <p className="text-gray-600 dark:text-gray-400">
+            前半の注ぐ方で酸みと甜みのバランスを、後半の注ぐ方でコクの強さを調整できます。
             下のオプションから、お好みの組み合わせを選んでください。
           </p>
         </div>
@@ -50,7 +50,7 @@ export default function Tetsu46Page() {
             <div>
               <h2 className="text-xl font-semibold mb-4">レシピ詳細</h2>
               <p className="text-gray-600 mb-4">{currentRecipe.description}</p>
-              
+
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm mb-6">
                 <div>
                   <div className="font-medium text-gray-900">抽出方法</div>

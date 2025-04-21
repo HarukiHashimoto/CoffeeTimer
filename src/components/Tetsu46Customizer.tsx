@@ -117,9 +117,9 @@ export default function Tetsu46Customizer() {
 
   return (
     <div className="space-y-8">
-      <div className="space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 text-gray-900">
+      <div className="space-y-6 bg-white dark:bg-gray-900 rounded-lg shadow-md p-6 text-gray-900 dark:text-gray-200">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Total Water (g)
           </label>
           <div className="flex items-center space-x-4">
@@ -130,15 +130,18 @@ export default function Tetsu46Customizer() {
               step="10"
               value={totalWater}
               onChange={(e) => setTotalWater(Number(e.target.value))}
-              className="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer"
+              className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer
+                [&::-webkit-slider-thumb]:bg-emerald-500 [&::-webkit-slider-thumb]:dark:bg-emerald-600
+                [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4
+                [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-md"
               suppressHydrationWarning
             />
-            <span className="text-sm font-medium text-gray-700">{totalWater}g</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{totalWater}g</span>
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             First Pour Style (40%)
           </label>
           <select
@@ -147,7 +150,9 @@ export default function Tetsu46Customizer() {
               const pour = firstPours.find((p) => p.name === e.target.value)
               if (pour) setSelectedFirstPour(pour)
             }}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md 
+              bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200
+              focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-600"
           >
             {firstPours.map((pour) => (
               <option key={pour.name} value={pour.name}>
@@ -159,7 +164,7 @@ export default function Tetsu46Customizer() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Second Pour Style (60%)
           </label>
           <select
@@ -168,7 +173,9 @@ export default function Tetsu46Customizer() {
               const pour = secondPours.find((p) => p.name === e.target.value)
               if (pour) setSelectedSecondPour(pour)
             }}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md 
+              bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200
+              focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-600"
           >
             {secondPours.map((pour) => (
               <option key={pour.name} value={pour.name}>
@@ -195,71 +202,69 @@ export default function Tetsu46Customizer() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold mb-6 text-emerald-800 border-b-2 border-emerald-300 pb-2">Current Recipe</h2>
-        <div className="space-y-6">
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h3 className="font-semibold text-emerald-700 mb-2">抽出比率</h3>
-            <p className="text-xl font-mono text-emerald-900">1:{(totalWater / recommendedCoffee).toFixed(1)}</p>
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-bold mb-6 text-emerald-800 dark:text-emerald-300 border-b-2 border-emerald-300 dark:border-emerald-700 pb-2">Current Recipe</h2>
+        <div className="space-y-4 text-gray-700 dark:text-gray-300">
+          <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+            <h3 className="font-semibold text-emerald-700 dark:text-emerald-400 mb-2">抽出比率</h3>
+            <p className="text-xl font-mono text-emerald-900 dark:text-emerald-300">1:{(totalWater / recommendedCoffee).toFixed(1)}</p>
           </div>
-          <div className="bg-white rounded-lg shadow-md p-4">
-            <h3 className="font-semibold text-emerald-700 mb-2">推奨抽出量</h3>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+            <h3 className="font-semibold text-emerald-700 dark:text-emerald-400 mb-2">推奨抽出量</h3>
             <div className="flex justify-between">
-              <span>コーヒー豆:</span>
-              <span className="font-mono text-emerald-900">{recommendedCoffee}g</span>
+              <span className="text-gray-700 dark:text-gray-300">コーヒー豆:</span>
+              <span className="font-mono text-emerald-900 dark:text-emerald-300">{recommendedCoffee}g</span>
             </div>
             <div className="flex justify-between mt-1">
-              <span>お湯:</span>
-              <span className="font-mono text-emerald-900">{totalWater}g</span>
+              <span className="text-gray-700 dark:text-gray-300">お湯:</span>
+              <span className="font-mono text-emerald-900 dark:text-emerald-300">{totalWater}g</span>
             </div>
           </div>
-          <div className="bg-white rounded-lg shadow-md p-4">
-            <h3 className="font-semibold text-emerald-700 mb-2">注ぎ方</h3>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+            <h3 className="font-semibold text-emerald-700 dark:text-emerald-400 mb-2">注ぎ方</h3>
             <div className="flex justify-between">
-              <span>前半:</span>
-              <span className="text-emerald-900">{selectedFirstPour.name}（{selectedFirstPour.description}）</span>
-            </div>
-            <div className="flex justify-between mt-1">
-              <span>後半:</span>
-              <span className="text-emerald-900">{selectedSecondPour.name}（{selectedSecondPour.description}）</span>
+              <span className="text-gray-700 dark:text-gray-300">前半:</span>
+              <span className="text-emerald-900 dark:text-emerald-300">{selectedFirstPour.name}（{selectedFirstPour.description}）</span>
             </div>
           </div>
-          <div className="bg-white rounded-lg shadow-md p-4">
-            <h3 className="text-lg font-semibold text-emerald-700 mb-4">注ぎステップ</h3>
-            <div className="space-y-2">
-              <div>
-                <h4 className="font-medium text-emerald-600 mb-2">前半のステップ</h4>
-                {firstPourSteps.map((step, index) => (
-                  <div key={index} className="mb-1">
-                    <p className="font-mono">
-                      <span className="text-emerald-900">{formatTime(step.cumulativeTime)} {step.amount}g注ぐ</span>
-                    </p>
-                  </div>
-                ))}
-              </div>
-              <div>
-                <h4 className="font-medium text-emerald-600 mb-2">後半のステップ</h4>
-                {secondPourSteps.map((step, index) => (
-                  <div key={index} className="mb-1">
-                    <p className="font-mono">
-                      <span className="text-emerald-900">{formatTime(step.cumulativeTime)} {step.amount}g注ぐ</span>
-                    </p>
-                  </div>
-                ))}
+          <div className="space-y-2">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+              <h3 className="text-lg font-semibold text-emerald-700 dark:text-emerald-400 mb-4">注げステップ</h3>
+              <div className="space-y-2">
+                <div>
+                  <h4 className="font-medium text-emerald-600 dark:text-emerald-500 mb-2">前半のステップ</h4>
+                  {firstPourSteps.map((step, index) => (
+                    <div key={index} className="mb-1">
+                      <p className="font-mono">
+                        <span className="text-emerald-900 dark:text-emerald-300">{formatTime(step.cumulativeTime)} {step.amount}g注ぐ</span>
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                <div>
+                  <h4 className="font-medium text-emerald-600 dark:text-emerald-500 mb-2">後半のステップ</h4>
+                  {secondPourSteps.map((step, index) => (
+                    <div key={index} className="mb-1">
+                      <p className="font-mono">
+                        <span className="text-emerald-900 dark:text-emerald-300">{formatTime(step.cumulativeTime)} {step.amount}g注ぐ</span>
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-lg shadow-md p-4">
-            <h3 className="text-lg font-semibold text-emerald-700 mb-4">抽出完了</h3>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+            <h3 className="text-lg font-semibold text-emerald-700 dark:text-emerald-400 mb-4">抽出完了</h3>
             <div className="mb-1">
               <p className="font-mono">
-                <span className="text-emerald-900">03:30 ドリッパーを外す</span>
+                <span className="text-emerald-900 dark:text-emerald-300">03:30 ドリッパーを外す</span>
               </p>
             </div>
           </div>
         </div>
         <button
-          className="w-full mt-6 px-4 py-2 text-white bg-emerald-500 rounded hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50"
+          className="w-full mt-6 px-4 py-2 text-white bg-emerald-500 dark:bg-emerald-600 rounded hover:bg-emerald-600 dark:hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:ring-opacity-50"
           onClick={handleUseRecipe}
         >
           Use This Recipe
