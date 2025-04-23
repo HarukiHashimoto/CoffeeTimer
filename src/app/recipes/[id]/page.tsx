@@ -1,52 +1,37 @@
-'use client'
-
-import { useState, useEffect } from 'react'
 import { recipes as defaultRecipes } from '@/data/recipes'
 import { Recipe } from '@/types/recipe'
 import Link from 'next/link'
 import RecipeDetail from '@/components/RecipeDetail'
 import Tetsu46Customizer from '@/components/Tetsu46Customizer'
+import { readFileSync } from 'fs'
+import { join } from 'path'
 
-export default function RecipePage({ params }: { params: { id: string } }) {
-  const [recipe, setRecipe] = useState<Recipe | undefined>()
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const loadRecipe = async () => {
-      // まずデフォルトレシピを確認
-      const defaultRecipe = defaultRecipes.find(r => r.id === params.id)
-      if (defaultRecipe) {
-        setRecipe(defaultRecipe)
-        setLoading(false)
-        return
-      }
-
-      // カスタムレシピを読み込む
-      try {
-        const response = await fetch('/custom-recipes.json')
-        if (response.ok) {
-          const customRecipes = await response.json()
-          const customRecipe = customRecipes.find((r: Recipe) => r.id === params.id)
-          setRecipe(customRecipe)
-        }
-      } catch (error) {
-        console.error('Failed to load custom recipe:', error)
-      }
-      setLoading(false)
-    }
-
-    loadRecipe()
-  }, [params.id])
-
-  if (loading) {
-    return (
-      <main className="min-h-screen p-8">
-        <div className="flex justify-center items-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
-        </div>
-      </main>
-    )
+// カスタムレシピをファイルシステムから読み込む
+function loadCustomRecipesFromFile(): Recipe[] {
+  try {
+    const dataPath = join(process.cwd(), 'public', 'custom-recipes.json')
+    const fileContent = readFileSync(dataPath, 'utf-8')
+    return JSON.parse(fileContent)
+  } catch {
+    return []
   }
+}
+
+// 静的生成のためのパラメータを生成
+export function generateStaticParams() {
+  const customRecipes = loadCustomRecipesFromFile()
+  const allRecipes = [...defaultRecipes, ...customRecipes]
+  return allRecipes.map((recipe) => ({
+    id: recipe.id,
+  }))
+}
+
+// レシピページコンポーネント
+export default function RecipePage({ params }: { params: { id: string } }) {
+  const customRecipes = loadCustomRecipesFromFile()
+  const recipe = defaultRecipes.find(r => r.id === params.id) ||
+                customRecipes.find(r => r.id === params.id)
+
   if (!recipe) {
     return (
       <main className="min-h-screen p-8">
