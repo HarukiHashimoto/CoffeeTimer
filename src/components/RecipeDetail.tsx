@@ -18,8 +18,8 @@ export default function RecipeDetail({ recipe }: Props) {
   const router = useRouter()
   const [waterAmount, setWaterAmount] = useState(300)
 
-  // ContextのselectedRecipeがあればそれを優先、なければprops.recipe
-  const recipeToShow = selectedRecipe || recipe
+  // カスタムレシピの場合は必ずprops.recipeを使う（selectedRecipeはTetsu46や他ページの影響を受けるため）
+  const recipeToShow = recipe.isCustom ? recipe : (selectedRecipe || recipe)
   
   // デバッグ用：recipeToShowの内容をコンソールに出力
   console.log('🔍 Debug - recipeToShow:', {
@@ -35,116 +35,116 @@ export default function RecipeDetail({ recipe }: Props) {
     return <div>レシピが見つかりませんでした</div>
   }
 
-  // レシピに基づいて水量の計算を行う
-  const calculateRecipe = (baseRecipe: Recipe) => {
-    let steps = [...(baseRecipe.steps || [])]
-    
-    // デバッグ用：baseRecipeの内容をコンソールに出力
-    console.log('Debug - baseRecipe:', JSON.stringify(baseRecipe, null, 2))
-    const coffee = Math.round(waterAmount / 15)
-
-    if (baseRecipe.id === 'basic-drip') {
-      const { waterAmounts } = calculateRecipeAmounts(waterAmount, SIMPLE_DRIP_STEPS)
-      steps = [
-        { description: `00:00 蒸らし: ${waterAmounts[0].waterAmount}gのお湯を注ぐ`, duration: 10, waterAmount: waterAmounts[0].waterAmount },
-        { description: '00:10 蒸らしを待つ', duration: 30 },
-        { description: `00:40 1回目: ${waterAmounts[1].waterAmount}gのお湯を注ぐ`, duration: 20, waterAmount: waterAmounts[1].waterAmount },
-        { description: '01:00 抽出を待つ', duration: 20 },
-        { description: `01:20 2回目: ${waterAmounts[2].waterAmount}gのお湯を注ぐ`, duration: 20, waterAmount: waterAmounts[2].waterAmount },
-        { description: '01:40 抽出を待つ', duration: 20 },
-        { description: '02:00 ドリッパーを外す' }
-      ]
-    } else if (baseRecipe.id === 'osmotic-flow') {
-      const { waterAmounts } = calculateRecipeAmounts(waterAmount, OSMOTIC_FLOW_STEPS)
-      steps = [
-        { description: `00:00 蒸らし: ${waterAmounts[0].waterAmount}gのお湯を注ぐ`, duration: 15, waterAmount: waterAmounts[0].waterAmount },
-        { description: '00:15 蒸らしを待つ', duration: 45 },
-        { description: `01:00 連続注水: ${waterAmounts[1].waterAmount}gのお湯を円を描くように注ぐ`, duration: 90, waterAmount: waterAmounts[1].waterAmount },
-        { description: '02:30 抽出を待つ', duration: 30 },
-        { description: '03:00 ドリッパーを外す' }
-      ]
-    } else if (baseRecipe.id === 'tetsu-4-6') {
-      steps = generateTetsu46Steps(waterAmount)
-    }
-
-    return {
-      ...baseRecipe,
-      ratio: `1:15 （コーヒー${coffee}g：お湯${waterAmount}g）`,
-      steps
-    }
-  }
-
+  // ステップは必ずprops.recipe（localStorageから取得したもの）をそのまま使う
   const getCumulativeWaterAmount = (steps: Recipe['steps'], upToIndex: number): number => {
     return steps
       .slice(0, upToIndex + 1)
-      .reduce((acc, curr) => acc + (curr.waterAmount || 0), 0)
+      .reduce((acc, curr) => acc + (curr.waterAmount || (curr.pourPercentage !== undefined ? Math.round(waterAmount * (curr.pourPercentage / 100)) : 0)), 0)
   }
 
-  const currentRecipe = calculateRecipe(recipeToShow)
-  
+  // レシピ情報はprops.recipeをそのまま使う。水量・注湯量の表示のみwaterAmountを反映
+  const stepsToShow = recipeToShow.steps || [];
+
   // デバッグ用：currentRecipeの内容をコンソールに出力
-  console.log('Debug - currentRecipe:', JSON.stringify(currentRecipe, null, 2))
+  console.log('Debug - currentRecipe:', JSON.stringify(recipeToShow, null, 2))
 
   return (
-    <main className="min-h-screen p-8 max-w-4xl mx-auto">
-      <Link href="/recipes" className="text-emerald-600 hover:text-emerald-700">
-        ← Back to Recipes
+    <main className="min-h-screen p-8 max-w-4xl mx-auto bg-gray-100 dark:bg-gray-950">
+      <Link href="/recipes" className="text-blue-600 dark:text-blue-400 hover:underline mb-4 inline-block text-base font-medium">
+        ← Back to recipes
       </Link>
 
-      <h1 className="text-4xl font-bold mb-6">{recipe.name}</h1>
-      
-      <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
-        {recipe.id !== 'tetsu-4-6' && (
-          <WaterAmountSelector
-            value={waterAmount}
-            onChange={setWaterAmount}
-          />
-        )}
-        <button
-          onClick={() => {
-            setSelectedRecipe(currentRecipe)
-            router.push('/timer')
-          }}
-          className="w-full bg-emerald-600 text-white py-3 rounded-lg hover:bg-emerald-700 transition-colors font-medium mb-6"
-        >
-          Use This Recipe
-        </button>
+      <h1 className="text-4xl font-bold mb-6 text-gray-900 dark:text-gray-100">{recipe.name}</h1>
 
-        <div>
-          <h2 className="text-lg font-medium mb-2">Method</h2>
-          <p>{currentRecipe.method}</p>
+      <div className="space-y-8">
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
+          <div className="mb-6">
+            <WaterAmountSelector value={waterAmount} onChange={setWaterAmount} />
+          </div>
+          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-200">レシピ詳細</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-4 whitespace-pre-line">{recipe.description}</p>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm mb-6">
+            <div>
+              <div className="font-medium text-gray-900 dark:text-gray-100">抽出方法</div>
+              <div className="text-gray-600 dark:text-gray-400">{recipe.method}</div>
+            </div>
+            <div>
+              <div className="font-medium text-gray-900 dark:text-gray-100">比率</div>
+              <div className="text-gray-600 dark:text-gray-400">{recipe.ratio}</div>
+            </div>
+            <div>
+              <div className="font-medium text-gray-900 dark:text-gray-100">挽き目</div>
+              <div className="text-gray-600 dark:text-gray-400">{recipe.grindSize}</div>
+            </div>
+            <div>
+              <div className="font-medium text-gray-900 dark:text-gray-100">コーヒー豆</div>
+              <div className="text-gray-600 dark:text-gray-400">{recipe.coffeeAmount ? `${recipe.coffeeAmount}g` : '-'}</div>
+            </div>
+            <div>
+              <div className="font-medium text-gray-900 dark:text-gray-100">お湯</div>
+              <div className="text-gray-600 dark:text-gray-400">{recipe.waterAmount ? `${recipe.waterAmount}g` : '-'}</div>
+            </div>
+            <div>
+              <div className="font-medium text-gray-900 dark:text-gray-100">抽出完了時間</div>
+              <div className="text-gray-600 dark:text-gray-400">{recipe.totalTime ? `${Math.floor(recipe.totalTime)}分${Math.round((recipe.totalTime % 1) * 60)}秒` : '-'}</div>
+            </div>
+          </div>
         </div>
-
         <div>
-          <h2 className="text-lg font-medium mb-2">Description</h2>
-          <p>{currentRecipe.description}</p>
-        </div>
-
-        <div>
-          <h2 className="text-lg font-medium mb-2">Coffee to Water Ratio</h2>
-          <p>{currentRecipe.ratio}</p>
-        </div>
-
-        <div>
-          <h2 className="text-lg font-medium mb-2">Grind Size</h2>
-          <p>{currentRecipe.grindSize}</p>
-        </div>
-
-        <div>
-          <h2 className="text-lg font-medium mb-2">Steps</h2>
-          <p>Total Steps: {currentRecipe.steps.length}</p>
-          <ol className="list-decimal list-inside space-y-2">
-            {currentRecipe.steps.map((step, index) => (
-              <li key={index} className="pl-2 whitespace-pre-line">
-                <span>{step.description}</span>
-                {step.waterAmount ? (
-                  <div className="text-gray-600 text-sm mt-1">
-                    湯量: {step.waterAmount}g (合計: {getCumulativeWaterAmount(currentRecipe.steps, index)}g)
+          <h2 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">抽出ステップ</h2>
+           {stepsToShow.length > 0 ? (
+            <div className="space-y-3">
+              {stepsToShow.map((step, index) => {
+                let pourAmount = step.waterAmount;
+                if (pourAmount === undefined && step.pourPercentage !== undefined) {
+                  pourAmount = Math.round(waterAmount * (step.pourPercentage / 100));
+                }
+                const cumulative = getCumulativeWaterAmount(stepsToShow, index);
+                return (
+                  <div key={index} className="flex gap-3 items-start text-sm">
+                    <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">
+                      {index + 1}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-gray-900 dark:text-gray-100 font-medium mb-1">{step.description}</p>
+                      <div className="text-xs text-gray-600 dark:text-gray-400 space-x-3">
+                        {step.duration !== undefined && (
+                          <span>{step.duration}秒</span>
+                        )}
+                        {pourAmount !== undefined && (
+                          <span>注湯量: {pourAmount}g</span>
+                        )}
+                        <span>累計湯量: {cumulative}g</span>
+                        {step.amount !== undefined && (
+                          <span>{step.amount}g豆</span>
+                        )}
+                        {step.pourPercentage !== undefined && (
+                          <span>注湯割合: {step.pourPercentage}%</span>
+                        )}
+                        {step.shouldSpin !== undefined && step.shouldSpin && (
+                          <span className="inline-block px-2 py-0.5 bg-emerald-200 text-emerald-800 rounded">スピンあり</span>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                ) : null}
-              </li>
-            ))}
-          </ol>
+                );
+              })}
+              {/* ドリッパーを外すステップ */}
+              <div className="flex gap-3 items-start text-sm">
+                <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">
+                  {stepsToShow.length + 1}
+                </div>
+                <div className="flex-1">
+                  <p className="text-gray-900 dark:text-gray-100 font-medium mb-1">
+                    ドリッパーを外す（{recipe.drainageSettings?.shouldDrainCompletely ? '落としきる' : '落としきらない'}）
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-gray-500 dark:text-gray-500">ステップが登録されていません。</div>
+          )}
         </div>
       </div>
     </main>

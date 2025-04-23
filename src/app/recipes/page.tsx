@@ -79,11 +79,15 @@ export default function RecipesPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {defaultRecipes.map(recipe => (
-          <RecipeCard key={recipe.id} recipe={recipe} />
+          <Link key={recipe.id} href={`/recipes/${recipe.id}`} className="block">
+            <RecipeCard recipe={recipe} />
+          </Link>
         ))}
         {customRecipes.map(recipe => (
           <div key={recipe.id} className="relative">
-            <RecipeCard recipe={recipe} />
+            <Link href={`/custom-recipes?id=${recipe.id}`} className="block">
+              <RecipeCard recipe={recipe} />
+            </Link>
             <div className="absolute top-2 right-2 flex space-x-2">
               <button
                 onClick={() => {

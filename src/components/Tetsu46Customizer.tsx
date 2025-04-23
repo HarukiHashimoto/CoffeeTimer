@@ -6,6 +6,7 @@ import { Recipe, Step, Pour as RecipePour } from '@/types/recipe'
 import { generateTetsu46Steps } from '@/utils/recipeCalculator'
 import { useRecipe } from '@/contexts/RecipeContext'
 import { useRouter } from 'next/navigation'
+import WaterAmountSelector from '@/components/WaterAmountSelector'
 
 // 秒数を00:00形式にフォーマット
 const formatTime = (totalSeconds: number): string => {
@@ -132,26 +133,8 @@ export default function Tetsu46Customizer() {
   return (
     <div className="space-y-8">
       <div className="space-y-6 bg-white dark:bg-gray-900 rounded-lg shadow-md p-6 text-gray-900 dark:text-gray-200">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Total Water (g)
-          </label>
-          <div className="flex items-center space-x-4">
-            <input
-              type="range"
-              min="200"
-              max="500"
-              step="10"
-              value={totalWater}
-              onChange={(e) => setTotalWater(Number(e.target.value))}
-              className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer
-                [&::-webkit-slider-thumb]:bg-emerald-500 [&::-webkit-slider-thumb]:dark:bg-emerald-600
-                [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4
-                [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-md"
-              suppressHydrationWarning
-            />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{totalWater}g</span>
-          </div>
+        <div className="mb-4">
+          <WaterAmountSelector value={totalWater} onChange={setTotalWater} />
         </div>
 
         <div>
