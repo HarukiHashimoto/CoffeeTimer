@@ -9,9 +9,9 @@ export default function BackButton() {
   return (
     <button 
       onClick={() => router.back()} 
-      className="p-2 bg-light-bg dark:bg-dark-bg border border-gray-300 dark:border-gray-700 rounded-full shadow-md hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors"
+      className="p-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
     >
-      <ArrowLeftIcon className="h-5 w-5 text-light-text dark:text-dark-text" />
+      <ArrowLeftIcon className="h-5 w-5 text-gray-700 dark:text-gray-300" />
     </button>
   );
 }
