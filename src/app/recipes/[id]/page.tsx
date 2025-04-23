@@ -1,16 +1,52 @@
-import { recipes } from '@/data/recipes'
+'use client'
+
+import { useState, useEffect } from 'react'
+import { recipes as defaultRecipes } from '@/data/recipes'
+import { Recipe } from '@/types/recipe'
 import Link from 'next/link'
 import RecipeDetail from '@/components/RecipeDetail'
 import Tetsu46Customizer from '@/components/Tetsu46Customizer'
 
-export function generateStaticParams() {
-  return recipes.map((recipe) => ({
-    id: recipe.id,
-  }))
-}
-
 export default function RecipePage({ params }: { params: { id: string } }) {
-  const recipe = recipes.find(r => r.id === params.id)
+  const [recipe, setRecipe] = useState<Recipe | undefined>()
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadRecipe = async () => {
+      // まずデフォルトレシピを確認
+      const defaultRecipe = defaultRecipes.find(r => r.id === params.id)
+      if (defaultRecipe) {
+        setRecipe(defaultRecipe)
+        setLoading(false)
+        return
+      }
+
+      // カスタムレシピを読み込む
+      try {
+        const response = await fetch('/custom-recipes.json')
+        if (response.ok) {
+          const customRecipes = await response.json()
+          const customRecipe = customRecipes.find((r: Recipe) => r.id === params.id)
+          setRecipe(customRecipe)
+        }
+      } catch (error) {
+        console.error('Failed to load custom recipe:', error)
+      }
+      setLoading(false)
+    }
+
+    loadRecipe()
+  }, [params.id])
+
+  if (loading) {
+    return (
+      <main className="min-h-screen p-8">
+        <div className="flex justify-center items-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
+        </div>
+      </main>
+    )
+  }
   if (!recipe) {
     return (
       <main className="min-h-screen p-8">

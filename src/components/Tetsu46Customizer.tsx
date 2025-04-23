@@ -54,13 +54,21 @@ export default function Tetsu46Customizer() {
       name: `4:6メソッド（${selectedFirstPour.name} × ${selectedSecondPour.name}）`,
       method: 'ハリオV60',
       description: `前半は「${selectedFirstPour.name}（${selectedFirstPour.description}）」、後半は「${selectedSecondPour.name}（${selectedSecondPour.description}）」の組み合わせです。
-\n推奨抽出量：\nコーヒー豆 ${recommendedCoffee}g\nお湯 ${totalWater}g
-\n抽出完了時間: 03:30`,
+推奨抽出量：
+コーヒー豆 ${recommendedCoffee}g
+お湯 ${totalWater}g
+抽出完了時間: 03:30`,
       ratio: `1:${(totalWater / recommendedCoffee).toFixed(1)}`,
+      coffeeAmount: recommendedCoffee,
+      waterAmount: totalWater,
       grindSize: '中粗挽き',
       totalTime: 3.5,
       steps: steps,
-      image: '/recipes/v60.jpg'
+      image: '/recipes/v60.jpg',
+      drainageSettings: {
+        shouldDrainCompletely: true,
+        drainageDuration: 30
+      }
     }
     setSelectedRecipe(customRecipe)
     setSteps(steps)
@@ -96,9 +104,15 @@ export default function Tetsu46Customizer() {
 お湯 ${totalWater}g
 抽出完了時間: 03:30`,
       ratio: `1:${(totalWater / recommendedCoffee).toFixed(1)}`,
+      coffeeAmount: recommendedCoffee,
+      waterAmount: totalWater,
       grindSize: '中粗挽き',
       totalTime: 3.5,
       steps: dynamicSteps,
+      drainageSettings: {
+        shouldDrainCompletely: true,
+        drainageDuration: 30
+      },
       image: '/recipes/tetsu46.jpg',
       metadata: {
         firstPour: selectedFirstPour,

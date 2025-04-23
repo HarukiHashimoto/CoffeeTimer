@@ -9,20 +9,15 @@ interface RecipeCardProps {
 
 export default function RecipeCard({ recipe }: RecipeCardProps) {
   return (
-    <Link
-      href={`/recipes/${recipe.id}`}
-      className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6"
-    >
-      <h2 className="text-2xl font-semibold mb-2 text-emerald-600 dark:text-emerald-600">{recipe.name}</h2>
-      <div className="text-gray-600 space-y-2">
-        <p className="text-sm">{recipe.description}</p>
-        <div className="flex flex-wrap gap-4 text-sm">
-          <div>
-            <span className="font-medium">Method:</span> {recipe.method}
-          </div>
-          <div>
-            <span className="font-medium">Time:</span> {recipe.totalTime} min
-          </div>
+    <Link href={`/recipes/${recipe.id}`} className="block">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow p-4">
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{recipe.name}</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">{recipe.description}</p>
+        <div className="grid grid-cols-2 gap-2 text-sm text-gray-500 dark:text-gray-400">
+          <div>抽出時間: {recipe.totalTime}分</div>
+          <div>比率: {recipe.ratio}</div>
+          <div>豆: {recipe.coffeeAmount}g</div>
+          <div>湯: {recipe.waterAmount}g</div>
         </div>
       </div>
     </Link>
