@@ -58,6 +58,15 @@ export default function RecipeDetail({ recipe }: Props) {
 
       <div className="space-y-8">
         <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
+          <button
+            className="mb-6 px-6 py-3 bg-emerald-600 text-white rounded-lg shadow font-bold hover:bg-emerald-700 transition-colors text-lg w-full"
+            onClick={() => {
+              setSelectedRecipe(recipeToShow)
+              router.push('/timer')
+            }}
+          >
+            Use This Recipe
+          </button>
           <div className="mb-6">
             <WaterAmountSelector value={waterAmount} onChange={setWaterAmount} />
           </div>
