@@ -20,6 +20,12 @@ export default function TimerPage() {
   const firstPourName = selectedRecipe?.metadata?.firstPour?.name || ''
   const secondPourName = selectedRecipe?.metadata?.secondPour?.name || ''
 
+  const getCumulativeWaterAmount = (steps: Step[], upToIndex: number): number => {
+    return steps
+      .slice(0, upToIndex + 1)
+      .reduce((acc, curr) => acc + (curr.waterAmount || 0), 0)
+  }
+
   const getStepBackgroundColor = (step: Step, index: number, currentTime: number) => {
     const cumulativeDuration = steps.slice(0, index).reduce((acc, curr) => acc + (curr.duration || 0), 0)
     const stepEndTime = cumulativeDuration + (step.duration || 0)
@@ -71,7 +77,14 @@ export default function TimerPage() {
                       {index + 1}
                     </div>
                     <div className="flex-grow relative z-10">
-                      <p className="text-gray-900 text-sm font-medium">{step.description}</p>
+                      <div>
+                        <p className="text-gray-900 text-sm font-medium">{step.description}</p>
+                        {step.waterAmount ? (
+                          <p className="text-gray-600 text-xs mt-1">
+                            湯量: {step.waterAmount}g (合計: {getCumulativeWaterAmount(steps, index)}g)
+                          </p>
+                        ) : null}
+                      </div>
                     </div>
                   </div>
                 )

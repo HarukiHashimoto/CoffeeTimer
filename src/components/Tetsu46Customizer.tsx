@@ -237,23 +237,41 @@ export default function Tetsu46Customizer() {
               <div className="space-y-2">
                 <div>
                   <h4 className="font-medium text-emerald-600 dark:text-emerald-500 mb-2">前半</h4>
-                  {firstPourSteps.map((step, index) => (
-                    <div key={index} className="mb-1">
-                      <p className="font-mono">
-                        <span className="text-emerald-900 dark:text-gray-100">{formatTime(step.cumulativeTime)} - {step.amount}g注ぐ</span>
-                      </p>
-                    </div>
-                  ))}
+                  {firstPourSteps.map((step, index) => {
+                    const cumulativeAmount = firstPourSteps
+                      .slice(0, index + 1)
+                      .reduce((acc, curr) => acc + curr.amount, 0)
+                    return (
+                      <div key={index} className="mb-2">
+                        <p className="font-mono">
+                          <span className="text-emerald-900 dark:text-gray-100">{formatTime(step.cumulativeTime)} - {step.amount}g注ぐ</span>
+                        </p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
+                          合計: {cumulativeAmount}g
+                        </p>
+                      </div>
+                    )
+                  })}
                 </div>
                 <div>
                   <h4 className="font-medium text-emerald-600 dark:text-emerald-500 mb-2">後半</h4>
-                  {secondPourSteps.map((step, index) => (
-                    <div key={index} className="mb-1">
-                      <p className="font-mono">
-                        <span className="text-emerald-900 dark:text-gray-100">{formatTime(step.cumulativeTime)} - {step.amount}g注ぐ</span>
-                      </p>
-                    </div>
-                  ))}
+                  {secondPourSteps.map((step, index) => {
+                    const firstPourTotal = firstPourSteps.reduce((acc, curr) => acc + curr.amount, 0)
+                    const secondPourCumulative = secondPourSteps
+                      .slice(0, index + 1)
+                      .reduce((acc, curr) => acc + curr.amount, 0)
+                    const totalAmount = firstPourTotal + secondPourCumulative
+                    return (
+                      <div key={index} className="mb-2">
+                        <p className="font-mono">
+                          <span className="text-emerald-900 dark:text-gray-100">{formatTime(step.cumulativeTime)} - {step.amount}g注ぐ</span>
+                        </p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
+                          合計: {totalAmount}g
+                        </p>
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             </div>

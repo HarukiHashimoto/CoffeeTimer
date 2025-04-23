@@ -74,6 +74,12 @@ export default function RecipeDetail({ recipe }: Props) {
     }
   }
 
+  const getCumulativeWaterAmount = (steps: Recipe['steps'], upToIndex: number): number => {
+    return steps
+      .slice(0, upToIndex + 1)
+      .reduce((acc, curr) => acc + (curr.waterAmount || 0), 0)
+  }
+
   const currentRecipe = calculateRecipe(recipeToShow)
   
   // デバッグ用：currentRecipeの内容をコンソールに出力
@@ -130,10 +136,12 @@ export default function RecipeDetail({ recipe }: Props) {
           <ol className="list-decimal list-inside space-y-2">
             {currentRecipe.steps.map((step, index) => (
               <li key={index} className="pl-2 whitespace-pre-line">
-                <div style={{color: '#888', fontSize: '0.8em'}}>
-                  Debug: {JSON.stringify(step)}
-                </div>
                 <span>{step.description}</span>
+                {step.waterAmount ? (
+                  <div className="text-gray-600 text-sm mt-1">
+                    湯量: {step.waterAmount}g (合計: {getCumulativeWaterAmount(currentRecipe.steps, index)}g)
+                  </div>
+                ) : null}
               </li>
             ))}
           </ol>
