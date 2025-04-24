@@ -26,17 +26,17 @@ export const secondPours: Pour[] = [
   {
     name: '薄く',
     description: 'さっぱりとした味わい',
-    ratios: [1]  // 180g
+    ratios: [1]
   },
   {
-    name: 'より濃く',
+    name: '少し薄く',
+    description: 'やや軽めの味わい',
+    ratios: [0.5, 0.5]
+  },
+  {
+    name: '濃く',
     description: 'コクのある味わい',
-    ratios: [0.5, 0.5]  // 90g, 90g
-  },
-  {
-    name: 'さらに濃く',
-    description: '深いコクと強い味わい',
-    ratios: [0.333, 0.333, 0.334]  // 60g, 60g, 60g
+    ratios: [0.333, 0.333, 0.334]
   }
 ]
 
@@ -65,11 +65,25 @@ export function calculatePours(totalWater: number, firstPour: Pour, secondPour: 
 
   const firstTotalTime = firstSteps.reduce((sum, step) => sum + step.time, 0)
 
+  // Second Pour Style (60%) 注湯タイミングを pour.name で分岐
+  let secondStepTimes: number[] = [];
+  if (secondPour.name === '薄く') {
+    // そのまま（従来通り、1回のみ）
+    secondStepTimes = [90]; // 01:30
+  } else if (secondPour.name === '少し薄く') {
+    secondStepTimes = [90, 150]; // 01:30, 02:30
+  } else if (secondPour.name === '濃く') {
+    secondStepTimes = [90, 135, 165]; // 01:30, 02:15, 02:45
+  } else {
+    // fallback: 従来のロジック
+    secondStepTimes = secondPour.ratios.map((_, idx) => firstTotalTime + idx * stepTime);
+  }
+
   const secondSteps = secondPour.ratios.map((ratio, index) => ({
     amount: Math.round(secondPart * ratio),
-    time: stepTime,
-    cumulativeTime: firstTotalTime + index * stepTime  // 経過時間を正確に計算
-  }))
+    time: index === 0 ? secondStepTimes[0] : secondStepTimes[index] - secondStepTimes[index - 1],
+    cumulativeTime: secondStepTimes[index]
+  }));
 
   return {
     firstSteps,

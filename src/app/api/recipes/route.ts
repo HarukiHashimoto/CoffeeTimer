@@ -18,3 +18,9 @@ export async function POST(request: Request) {
     )
   }
 }
+
+// ビルドエラー回避用のダミーGET
+export async function GET() {
+  return NextResponse.json([]);
+}
+

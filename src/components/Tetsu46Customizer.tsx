@@ -20,7 +20,7 @@ export default function Tetsu46Customizer() {
   const { setSelectedRecipe, setTetsu46Params } = useRecipe()
   const [totalWater, setTotalWater] = useState(300)
   const [selectedFirstPour, setSelectedFirstPour] = useState<Pour>(firstPours[0])
-  const [selectedSecondPour, setSelectedSecondPour] = useState<Pour>(secondPours[0])
+  const [selectedSecondPour, setSelectedSecondPour] = useState<Pour>(secondPours[2])
   const recommendedCoffee = Math.round(totalWater / 15) // 1:15の抽出比率
   const [steps, setSteps] = useState<Step[]>([])
   const [firstPourSteps, setFirstPourSteps] = useState<{ amount: number, time: number, cumulativeTime: number }[]>([])

@@ -153,13 +153,36 @@ export default function CustomRecipeEditor({ onSave, onCancel, initialRecipe }: 
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-gray-700 dark:text-gray-300">時間 (秒)</label>
-                  <input
-                    type="number"
-                    value={step.duration || 0}
-                    onChange={(e) => handleUpdateStep(index, { ...step, duration: Number(e.target.value) })}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
+                  <label className="block text-sm text-gray-700 dark:text-gray-300">時間</label>
+<div className="flex gap-2">
+  <input
+    type="number"
+    min={0}
+    value={Math.floor((step.duration || 0) / 60)}
+    onChange={e => {
+      const minutes = Number(e.target.value);
+      const seconds = (step.duration || 0) % 60;
+      handleUpdateStep(index, { ...step, duration: minutes * 60 + seconds });
+    }}
+    className="w-20 rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+    placeholder="分"
+  />
+  <span className="self-center">分</span>
+  <input
+    type="number"
+    min={0}
+    max={59}
+    value={(step.duration || 0) % 60}
+    onChange={e => {
+      const seconds = Number(e.target.value);
+      const minutes = Math.floor((step.duration || 0) / 60);
+      handleUpdateStep(index, { ...step, duration: minutes * 60 + seconds });
+    }}
+    className="w-20 rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+    placeholder="秒"
+  />
+  <span className="self-center">秒</span>
+</div>
                 </div>
                 <div>
                   <label className="block text-sm text-gray-700 dark:text-gray-300">注湯量 (%)</label>
@@ -189,37 +212,57 @@ export default function CustomRecipeEditor({ onSave, onCancel, initialRecipe }: 
         </div>
 
         <div className="space-y-3">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">落としきり設定</label>
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="drain-completely"
-              checked={drainageSettings.shouldDrainCompletely}
-              onChange={(e) => setDrainageSettings({
-                ...drainageSettings,
-                shouldDrainCompletely: e.target.checked
-              })}
-              className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
-            />
-            <label htmlFor="drain-completely" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-              完全に落としきる
-            </label>
-          </div>
-          
-          {drainageSettings.shouldDrainCompletely && (
-            <div>
-              <label className="block text-sm text-gray-700 dark:text-gray-300">落としきり時間 (秒)</label>
-              <input
-                type="number"
-                value={drainageSettings.drainageDuration || 30}
-                onChange={(e) => setDrainageSettings({
-                  ...drainageSettings,
-                  drainageDuration: Number(e.target.value)
-                })}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              />
-            </div>
-          )}
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">落としきる</label>
+<div className="flex items-center">
+  <input
+    type="checkbox"
+    id="drain-completely"
+    checked={drainageSettings.shouldDrainCompletely}
+    onChange={(e) => setDrainageSettings({
+      ...drainageSettings,
+      shouldDrainCompletely: e.target.checked
+    })}
+    className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
+  />
+  <label htmlFor="drain-completely" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+    落としきる
+  </label>
+</div>
+
+{drainageSettings.shouldDrainCompletely && (
+  <div>
+    <label className="block text-sm text-gray-700 dark:text-gray-300">ドリッパーを外す</label>
+    <div className="flex gap-2">
+      <input
+        type="number"
+        min={0}
+        value={Math.floor((drainageSettings.drainageDuration || 0) / 60)}
+        onChange={e => {
+          const minutes = Number(e.target.value);
+          const seconds = (drainageSettings.drainageDuration || 0) % 60;
+          setDrainageSettings({ ...drainageSettings, drainageDuration: minutes * 60 + seconds });
+        }}
+        className="w-20 rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+        placeholder="分"
+      />
+      <span className="self-center">分</span>
+      <input
+        type="number"
+        min={0}
+        max={59}
+        value={(drainageSettings.drainageDuration || 0) % 60}
+        onChange={e => {
+          const seconds = Number(e.target.value);
+          const minutes = Math.floor((drainageSettings.drainageDuration || 0) / 60);
+          setDrainageSettings({ ...drainageSettings, drainageDuration: minutes * 60 + seconds });
+        }}
+        className="w-20 rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+        placeholder="秒"
+      />
+      <span className="self-center">秒</span>
+    </div>
+  </div>
+)}
         </div>
       </div>
 

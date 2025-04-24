@@ -96,7 +96,11 @@ export default function RecipeDetail({ recipe }: Props) {
             </div>
             <div>
               <div className="font-medium text-gray-900 dark:text-gray-100">抽出完了時間</div>
-              <div className="text-gray-600 dark:text-gray-400">{recipe.totalTime ? `${Math.floor(recipe.totalTime)}分${Math.round((recipe.totalTime % 1) * 60)}秒` : '-'}</div>
+<div className="text-gray-600 dark:text-gray-400">
+  {recipe.drainageSettings?.drainageDuration !== undefined
+    ? `${Math.floor(recipe.drainageSettings.drainageDuration / 60)}分${recipe.drainageSettings.drainageDuration % 60}秒`
+    : '-'}
+</div>
             </div>
           </div>
         </div>
@@ -105,51 +109,50 @@ export default function RecipeDetail({ recipe }: Props) {
            {stepsToShow.length > 0 ? (
             <div className="space-y-3">
               {stepsToShow.map((step, index) => {
-                let pourAmount = step.waterAmount;
-                if (pourAmount === undefined && step.pourPercentage !== undefined) {
-                  pourAmount = Math.round(waterAmount * (step.pourPercentage / 100));
-                }
-                const cumulative = getCumulativeWaterAmount(stepsToShow, index);
-                return (
-                  <div key={index} className="flex gap-3 items-start text-sm">
-                    <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">
-                      {index + 1}
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-gray-900 dark:text-gray-100 font-medium mb-1">{step.description}</p>
-                      <div className="text-xs text-gray-600 dark:text-gray-400 space-x-3">
-                        {step.duration !== undefined && (
-                          <span>{step.duration}秒</span>
-                        )}
-                        {pourAmount !== undefined && (
-                          <span>注湯量: {pourAmount}g</span>
-                        )}
-                        <span>累計湯量: {cumulative}g</span>
-                        {step.amount !== undefined && (
-                          <span>{step.amount}g豆</span>
-                        )}
-                        {step.pourPercentage !== undefined && (
-                          <span>注湯割合: {step.pourPercentage}%</span>
-                        )}
-                        {step.shouldSpin !== undefined && step.shouldSpin && (
-                          <span className="inline-block px-2 py-0.5 bg-emerald-200 text-emerald-800 rounded">スピンあり</span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+  // 00:00形式に変換
+  const formatTime = (totalSeconds: number) => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  };
+  let pourAmount = step.waterAmount;
+  if (pourAmount === undefined && step.pourPercentage !== undefined) {
+    pourAmount = Math.round(waterAmount * (step.pourPercentage / 100));
+  }
+  const cumulative = getCumulativeWaterAmount(stepsToShow, index);
+  return (
+    <div key={index} className="mb-3 flex gap-3 items-start text-sm">
+      <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">
+        {index + 1}
+      </div>
+      <div className="flex-1">
+        <div className="font-semibold text-gray-900 dark:text-gray-100">
+          {formatTime(step.duration || 0)} - {pourAmount !== undefined ? `${pourAmount}g注ぐ` : step.description}
+        </div>
+        <div className="text-xs text-gray-600 dark:text-gray-400">
+          合計: {cumulative}g
+        </div>
+      </div>
+    </div>
+  );
+})}
               {/* ドリッパーを外すステップ */}
-              <div className="flex gap-3 items-start text-sm">
-                <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">
-                  {stepsToShow.length + 1}
-                </div>
-                <div className="flex-1">
-                  <p className="text-gray-900 dark:text-gray-100 font-medium mb-1">
-                    ドリッパーを外す（{recipe.drainageSettings?.shouldDrainCompletely ? '落としきる' : '落としきらない'}）
-                  </p>
-                </div>
-              </div>
+<div className="flex gap-3 items-start text-sm">
+  <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">
+    {stepsToShow.length + 1}
+  </div>
+  <div className="flex-1">
+    <div className="font-semibold text-gray-900 dark:text-gray-100">
+      {(() => {
+        const duration = recipe.drainageSettings?.drainageDuration ?? 0;
+        const minutes = Math.floor(duration / 60);
+        const seconds = duration % 60;
+        const timeStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        return `${timeStr} - ドリッパーを外す（${recipe.drainageSettings?.shouldDrainCompletely ? '落としきる' : '落としきらない'}）`;
+      })()}
+    </div>
+  </div>
+</div>
             </div>
           ) : (
             <div className="text-gray-500 dark:text-gray-500">ステップが登録されていません。</div>
