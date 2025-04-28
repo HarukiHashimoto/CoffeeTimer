@@ -92,13 +92,16 @@ export default function CustomRecipeEditor({ onSave, onCancel, initialRecipe }: 
     const stepsWithoutEject = generatedSteps.filter(s => !s.isEjectDripper);
     if (drainageSettings.shouldDrainCompletely) {
       const drainTime = drainageSettings.drainageDuration || 0;
-      const timeStr = formatTime(drainTime);
+      // ドリッパーを外すステップの開始時刻は drainageDuration（ダイアログで設定した値）
+      const dripperEjectStartTime = drainTime;
+      const timeStr = formatTime(dripperEjectStartTime);
       stepsWithoutEject.push({
         description: `${timeStr} - ドリッパーを外す（落としきる）`,
         duration: drainTime,
         shouldSpin: false,
         isEjectDripper: true,
         waterAmount: undefined,
+        startTime: dripperEjectStartTime,
       });
     }
     const recipe: Recipe = {

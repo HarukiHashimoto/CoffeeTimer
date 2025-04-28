@@ -18,19 +18,51 @@ export default function TimerStepsDisplay({ steps, currentTime }: Props) {
         let progressWidth = '0%';
         let effectiveDuration = stepDuration;
         let effectiveEndTime = stepEndTime;
-        // duration: 0 の step は次の step の duration を借りる
-        if (stepDuration === 0 && steps[index + 1] && typeof steps[index + 1].duration === 'number') {
-          effectiveDuration = steps[index + 1].duration;
-          effectiveEndTime = cumulativeDuration + effectiveDuration;
-        }
-        if (effectiveDuration > 0) {
+
+        // --- カスタムレシピの「最後の通常ステップ→ドリッパー外し」特別処理 ---
+        const isLastNormalStep =
+          steps[index + 1]?.isEjectDripper && !step.isEjectDripper &&
+          steps.filter(s => !s.isEjectDripper).length > 0 &&
+          index === steps.filter(s => !s.isEjectDripper).length - 1;
+        const dripperEjectStep = steps.find(s => s.isEjectDripper);
+        if (isLastNormalStep && dripperEjectStep && typeof step.startTime === 'number' && typeof dripperEjectStep.startTime === 'number') {
+          const start = step.startTime;
+          const end = dripperEjectStep.startTime;
+          if (currentTime > start && currentTime < end) {
+            progressWidth = `${Math.min(100, ((currentTime - start) / (end - start)) * 100)}%`;
+          } else if (currentTime >= end) {
+            progressWidth = '100%';
+          }
+        } else if (step.isEjectDripper && typeof step.startTime === 'number') {
+          // ドリッパー外しステップはstartTimeになった瞬間に100%
+          if (currentTime >= step.startTime) {
+            progressWidth = '100%';
+          }
+        } else if (effectiveDuration > 0) {
           if (currentTime > cumulativeDuration && currentTime < effectiveEndTime) {
             progressWidth = `${Math.min(100, ((currentTime - cumulativeDuration) / (effectiveEndTime - cumulativeDuration)) * 100)}%`;
           } else if (currentTime >= effectiveEndTime) {
             progressWidth = '100%';
           }
           // currentTime === cumulativeDuration のときは0%
+        } else if (index === steps.length - 1) {
+          // 最終ステップがduration 0（例: ドリッパーを外す等）の場合、currentTimeがcumulativeDuration以降で100%
+          if (currentTime >= cumulativeDuration) {
+            progressWidth = '100%';
+          }
         }
+
+        // デバッグログ
+        console.log('[TimerStepsDisplay] step', {
+          index,
+          description: step.description,
+          isEjectDripper: step.isEjectDripper,
+          currentTime,
+          startTime: step.startTime,
+          progressWidth,
+          isLastNormalStep,
+          dripperEjectStepStart: dripperEjectStep?.startTime,
+        });
 
         return (
           <div key={index} className="relative flex items-center space-x-3 bg-gray-50 p-2 rounded-lg overflow-hidden">
