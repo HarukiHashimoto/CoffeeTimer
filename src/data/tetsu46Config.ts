@@ -79,11 +79,17 @@ export function calculatePours(totalWater: number, firstPour: Pour, secondPour: 
     secondStepTimes = secondPour.ratios.map((_, idx) => firstTotalTime + idx * stepTime);
   }
 
-  const secondSteps = secondPour.ratios.map((ratio, index) => ({
-    amount: Math.round(secondPart * ratio),
-    time: index === 0 ? secondStepTimes[0] : secondStepTimes[index] - secondStepTimes[index - 1],
-    cumulativeTime: secondStepTimes[index]
-  }));
+  const secondSteps = secondPour.ratios.map((ratio, index) => {
+    const amount = Math.round(secondPart * ratio);
+    const start = secondStepTimes[index];
+    const end = secondStepTimes[index + 1] ?? 210; // 210秒=3:30
+    const time = end - start;
+    return {
+      amount,
+      time,
+      cumulativeTime: start,
+    };
+  });
 
   return {
     firstSteps,

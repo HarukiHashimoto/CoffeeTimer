@@ -23,18 +23,24 @@ export default function TimerPage() {
   const getCumulativeWaterAmount = (steps: Step[], upToIndex: number): number => {
     return steps
       .slice(0, upToIndex + 1)
-      .reduce((acc, curr) => acc + (curr.waterAmount || 0), 0)
+      .reduce((acc, curr) => acc + (typeof curr.waterAmount === 'number' ? curr.waterAmount : 0), 0)
   }
 
   const getStepBackgroundColor = (step: Step, index: number, currentTime: number) => {
-    const cumulativeDuration = steps.slice(0, index).reduce((acc, curr) => acc + (curr.duration || 0), 0)
-    const stepEndTime = cumulativeDuration + (step.duration || 0)
+    const cumulativeDuration = steps.slice(0, index).reduce((acc, curr) => acc + (typeof curr.duration === 'number' ? curr.duration : 0), 0)
+    const stepDuration = typeof step.duration === 'number' ? step.duration : 0
+    const stepEndTime = cumulativeDuration + stepDuration
 
     let progressWidth = '0%'
 
-    if (currentTime >= cumulativeDuration && currentTime < stepEndTime) {
-      progressWidth = `${Math.min(100, ((currentTime - cumulativeDuration) / (stepEndTime - cumulativeDuration)) * 100)}%`
-    } else if (currentTime >= stepEndTime) {
+    if (stepDuration > 0) {
+      if (currentTime >= cumulativeDuration && currentTime < stepEndTime) {
+        progressWidth = `${Math.min(100, ((currentTime - cumulativeDuration) / (stepEndTime - cumulativeDuration)) * 100)}%`
+      } else if (currentTime >= stepEndTime) {
+        progressWidth = '100%'
+      }
+    } else if (stepDuration === 0 && currentTime >= cumulativeDuration) {
+      // ドリッパーを外すstepなどduration=0のものにも色を付ける
       progressWidth = '100%'
     }
 
