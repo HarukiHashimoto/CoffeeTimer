@@ -18,7 +18,7 @@ export default function Tetsu46Page() {
         ← Back to recipes
       </Link>
 
-      <h1 className="text-4xl font-bold mb-6">4:6メソッド カスタマイズ</h1>
+      <h1 className="text-4xl font-bold mb-6 text-gray-900 dark:text-gray-100">4:6メソッド カスタマイズ</h1>
 
       <div className="space-y-8">
         <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
@@ -37,17 +37,16 @@ export default function Tetsu46Page() {
 
         {currentRecipe && (
           <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6 space-y-6">
-            <button
-              onClick={() => {
-                setSelectedRecipe(currentRecipe)
-                router.push('/timer')
-              }}
-              className="w-full bg-emerald-600 dark:bg-emerald-700 text-white py-3 rounded-lg hover:bg-emerald-700 dark:hover:bg-emerald-800 transition-colors font-medium"
-            >
-              Use This Recipe
-            </button>
-
             <div>
+              <button
+                onClick={() => {
+                  setSelectedRecipe(currentRecipe)
+                  router.push('/timer')
+                }}
+                className="w-full bg-emerald-600 dark:bg-emerald-700 text-white py-3 rounded-lg hover:bg-emerald-700 dark:hover:bg-emerald-800 transition-colors font-medium mb-6"
+              >
+                Use This Recipe
+              </button>
               <h2 className="text-xl font-semibold mb-4">レシピ詳細</h2>
               <p className="text-gray-600 mb-4">{currentRecipe.description}</p>
 

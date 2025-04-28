@@ -13,12 +13,6 @@ export default function TimerPage() {
   const [currentTime, setCurrentTime] = useState(0);
   const steps: Step[] = Array.isArray(selectedRecipe?.steps) ? selectedRecipe.steps : [];
 
-  // Debug logs
-  if (typeof window !== 'undefined') {
-    console.log('selectedRecipe:', selectedRecipe);
-    console.log('steps:', steps);
-  }
-
   const firstPourName = selectedRecipe?.metadata?.firstPour?.name || '';
   const secondPourName = selectedRecipe?.metadata?.secondPour?.name || '';
 
