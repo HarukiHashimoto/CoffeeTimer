@@ -1,24 +1,26 @@
 'use client'
 
 import { useState } from 'react'
-import TimerComponent from '@/components/TimerComponent'
+import Tetsu46Timer from '@/components/Timer/Tetsu46Timer'
+import GenericRecipeTimer from '@/components/Timer/GenericRecipeTimer'
 import { useRecipe } from '@/contexts/RecipeContext'
 import Link from 'next/link'
 
 import { Step } from '@/types/recipe'
 
 export default function TimerPage() {
-  const { selectedRecipe } = useRecipe()
-  const [currentTime, setCurrentTime] = useState(0)
+  const { selectedRecipe } = useRecipe();
+  const [currentTime, setCurrentTime] = useState(0);
+  const steps: Step[] = Array.isArray(selectedRecipe?.steps) ? selectedRecipe.steps : [];
 
-  const handleResetTimer = () => {
-    setCurrentTime(0)
+  // Debug logs
+  if (typeof window !== 'undefined') {
+    console.log('selectedRecipe:', selectedRecipe);
+    console.log('steps:', steps);
   }
 
-  const steps: Step[] = selectedRecipe?.steps || []
-
-  const firstPourName = selectedRecipe?.metadata?.firstPour?.name || ''
-  const secondPourName = selectedRecipe?.metadata?.secondPour?.name || ''
+  const firstPourName = selectedRecipe?.metadata?.firstPour?.name || '';
+  const secondPourName = selectedRecipe?.metadata?.secondPour?.name || '';
 
   const getCumulativeWaterAmount = (steps: Step[], upToIndex: number): number => {
     return steps
@@ -46,9 +48,9 @@ export default function TimerPage() {
 
     return { progressWidth }
   }
-
   return (
-    <div className="container mx-auto px-4 py-4 flex flex-col h-screen">
+    <div className="container mx-auto px-4 py-4">
+      {/* ヘッダー */}
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center space-x-3">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-emerald-600" viewBox="0 0 200 148.813">
@@ -60,65 +62,26 @@ export default function TimerPage() {
           トップに戻る
         </Link>
       </div>
-      <div className="flex-grow flex flex-col">
-        <TimerComponent onTimeUpdate={setCurrentTime} onReset={handleResetTimer} className="mb-4" />
-
-        {selectedRecipe ? (
-          <div className="flex-grow overflow-auto bg-white rounded-lg shadow-md p-4 dark:bg-gray-300">
-            <div className="space-y-4">
-              {steps.map((step, index) => {
-                const { progressWidth } = getStepBackgroundColor(step, index, currentTime)
-
-                return (
-                  <div
-                    key={index}
-                    className="relative flex items-center space-x-3 bg-gray-50 p-2 rounded-lg overflow-hidden"
-                  >
-                    {/* プログレスバー */}
-                    <div
-                      className="absolute left-0 top-0 h-full bg-emerald-200 opacity-50 transition-all duration-300"
-                      style={{ width: progressWidth }}
-                    />
-                    <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 font-mono text-sm font-bold relative z-10">
-                      {index + 1}
-                    </div>
-                    <div className="flex-grow relative z-10">
-                      <div>
-                        <p className="text-gray-900 text-sm font-medium">{step.description}</p>
-                        {step.waterAmount ? (
-                          <p className="text-gray-600 text-xs mt-1">
-                            湯量: {step.waterAmount}g (合計: {getCumulativeWaterAmount(steps, index)}g)
-                          </p>
-                        ) : null}
-                      </div>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-
-            {selectedRecipe && selectedRecipe.metadata && (
-              <div className="mt-4 flex space-x-4 text-sm border-t pt-4">
-                <div className="flex-1 flex items-center space-x-3 bg-gray-100 p-2 rounded-lg">
-                  <div className="text-sm font-medium text-gray-700">前半</div>
-                  <div className="text-gray-900 font-semibold">{selectedRecipe.metadata.firstPour?.name || '未設定'}</div>
-                </div>
-                <div className="flex-1 flex items-center space-x-3 bg-gray-100 p-2 rounded-lg">
-                  <div className="text-sm font-medium text-gray-700">後半</div>
-                  <div className="text-gray-900 font-semibold">{selectedRecipe.metadata.secondPour?.name || '未設定'}</div>
-                </div>
-              </div>
-            )}
-          </div>
+      <Link href="/" className="text-blue-600 hover:underline">
+        トップに戻る
+      </Link>
+      {/* タイマー本体を上部に配置 */}
+      <div className="mt-6">
+        {selectedRecipe?.id === 'tetsu-4-6' ? (
+          <Tetsu46Timer />
         ) : (
-          <div className="mt-8 text-center">
-            <p className="text-gray-600 mb-4">No recipe selected</p>
-            <Link href="/recipes" className="text-blue-600 hover:underline">
-              Browse Recipes
-            </Link>
-          </div>
+          <GenericRecipeTimer />
         )}
       </div>
+      {/* レシピ未選択時のみ案内を表示 */}
+      {!selectedRecipe && (
+        <div className="p-8 text-center text-gray-500">
+          レシピが選択されていません。
+          <div className="mt-4">
+            <Link href="/recipes" className="text-blue-600 hover:underline">レシピ一覧へ</Link>
+          </div>
+        </div>
+      )}
     </div>
-  )
+  );
 }
