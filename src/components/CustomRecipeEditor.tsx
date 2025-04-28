@@ -15,7 +15,10 @@ export default function CustomRecipeEditor({ onSave, onCancel, initialRecipe }: 
   const [coffeeAmount, setCoffeeAmount] = useState(initialRecipe?.coffeeAmount || 20)
   const [waterAmount, setWaterAmount] = useState(initialRecipe?.waterAmount || 300)
   const [grindSize, setGrindSize] = useState(initialRecipe?.grindSize || '中粗挽き')
-  const [steps, setSteps] = useState<Step[]>(initialRecipe?.steps || [])
+  // isEjectDripper: true なステップは通常編集リストから除外
+  const [steps, setSteps] = useState<Step[]>(
+    (initialRecipe?.steps || []).filter((s) => !s.isEjectDripper)
+  )
   const [drainageSettings, setDrainageSettings] = useState<DrainageSettings>(
     initialRecipe?.drainageSettings || {
       shouldDrainCompletely: true,
@@ -45,7 +48,59 @@ export default function CustomRecipeEditor({ onSave, onCancel, initialRecipe }: 
     setSteps(steps.filter((_, i) => i !== index))
   }
 
+  const formatTime = (totalSeconds: number) => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  };
+
   const handleSave = () => {
+    const totalWater = waterAmount;
+    let cumulativeTime = 0;
+    // startTimeを昇順でソート
+    const sortedSteps = steps.filter(s => !s.isEjectDripper).slice().sort((a, b) => (a.startTime || 0) - (b.startTime || 0));
+    const generatedSteps = sortedSteps.map((step, idx, arr) => {
+      let desc = '';
+      const timeStr = formatTime(step.startTime || 0);
+      let waterAmt: number | undefined = undefined;
+      if (step.pourPercentage && step.pourPercentage > 0) {
+        waterAmt = Math.round(totalWater * (step.pourPercentage / 100));
+        desc = `${timeStr} - ${waterAmt}g注ぐ`;
+      } else if (step.shouldSpin) {
+        desc = `${timeStr} - 攪拌する`;
+      } else {
+        desc = `${timeStr} - ${step.description || '（内容未設定）'}`;
+      }
+      // スピン有の場合は末尾に追加
+      if (step.shouldSpin) {
+        desc += '（スピン有）';
+      }
+      // durationは次のstep.startTimeとの差分、最後は0
+      let duration = 0;
+      if (idx < arr.length - 1) {
+        duration = (arr[idx + 1].startTime || 0) - (step.startTime || 0);
+        if (duration < 0) duration = 0;
+      }
+      return {
+        ...step,
+        description: desc,
+        waterAmount: waterAmt,
+        duration,
+      };
+    });
+    // ドリッパー外し（落としきる）
+    const stepsWithoutEject = generatedSteps.filter(s => !s.isEjectDripper);
+    if (drainageSettings.shouldDrainCompletely) {
+      const drainTime = drainageSettings.drainageDuration || 0;
+      const timeStr = formatTime(drainTime);
+      stepsWithoutEject.push({
+        description: `${timeStr} - ドリッパーを外す（落としきる）`,
+        duration: drainTime,
+        shouldSpin: false,
+        isEjectDripper: true,
+        waterAmount: undefined,
+      });
+    }
     const recipe: Recipe = {
       id: initialRecipe?.id || `custom-${Date.now()}`,
       name,
@@ -55,13 +110,13 @@ export default function CustomRecipeEditor({ onSave, onCancel, initialRecipe }: 
       coffeeAmount,
       waterAmount,
       grindSize,
-      totalTime: steps.reduce((acc, step) => acc + (step.duration || 0), 0) / 60,
-      steps,
+      totalTime: stepsWithoutEject.reduce((acc, step) => acc + (step.duration || 0), 0) / 60,
+      steps: stepsWithoutEject,
       drainageSettings,
       image: '/recipes/v60.jpg',
       isCustom: true
-    }
-    onSave(recipe)
+    };
+    onSave(recipe);
   }
 
   return (
@@ -138,7 +193,7 @@ export default function CustomRecipeEditor({ onSave, onCancel, initialRecipe }: 
             </button>
           </div>
           
-          {steps.map((step, index) => (
+          {steps.filter(step => !step.isEjectDripper).map((step, index) => (
             <div key={index} className="p-4 border rounded-lg space-y-3">
               <div className="flex justify-between">
                 <span className="font-medium">ステップ {index + 1}</span>
@@ -153,36 +208,36 @@ export default function CustomRecipeEditor({ onSave, onCancel, initialRecipe }: 
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-gray-700 dark:text-gray-300">時間</label>
-<div className="flex gap-2">
-  <input
-    type="number"
-    min={0}
-    value={Math.floor((step.duration || 0) / 60)}
-    onChange={e => {
-      const minutes = Number(e.target.value);
-      const seconds = (step.duration || 0) % 60;
-      handleUpdateStep(index, { ...step, duration: minutes * 60 + seconds });
-    }}
-    className="w-20 rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-    placeholder="分"
-  />
-  <span className="self-center">分</span>
-  <input
-    type="number"
-    min={0}
-    max={59}
-    value={(step.duration || 0) % 60}
-    onChange={e => {
-      const seconds = Number(e.target.value);
-      const minutes = Math.floor((step.duration || 0) / 60);
-      handleUpdateStep(index, { ...step, duration: minutes * 60 + seconds });
-    }}
-    className="w-20 rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-    placeholder="秒"
-  />
-  <span className="self-center">秒</span>
-</div>
+                  <label className="block text-sm text-gray-700 dark:text-gray-300">開始時間</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="number"
+                      min={0}
+                      value={Math.floor((step.startTime || 0) / 60)}
+                      onChange={e => {
+                        const minutes = Number(e.target.value);
+                        const seconds = (step.startTime || 0) % 60;
+                        handleUpdateStep(index, { ...step, startTime: minutes * 60 + seconds });
+                      }}
+                      className="w-20 rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                      placeholder="分"
+                    />
+                    <span className="self-center">分</span>
+                    <input
+                      type="number"
+                      min={0}
+                      max={59}
+                      value={(step.startTime || 0) % 60}
+                      onChange={e => {
+                        const seconds = Number(e.target.value);
+                        const minutes = Math.floor((step.startTime || 0) / 60);
+                        handleUpdateStep(index, { ...step, startTime: minutes * 60 + seconds });
+                      }}
+                      className="w-20 rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                      placeholder="秒"
+                    />
+                    <span className="self-center">秒</span>
+                  </div>
                 </div>
                 <div>
                   <label className="block text-sm text-gray-700 dark:text-gray-300">注湯量 (%)</label>

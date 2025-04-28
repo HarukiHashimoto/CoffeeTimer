@@ -11,6 +11,10 @@ export default function GenericRecipeTimer() {
   // 汎用レシピ用の進行ロジック
   const steps: Step[] = selectedRecipe?.steps || []
 
+  // Debug: Log selectedRecipe and steps
+  console.log('selectedRecipe:', selectedRecipe);
+  console.log('steps:', steps);
+
   return (
     <div>
       <TimerComponent onTimeUpdate={setCurrentTime} onReset={() => setCurrentTime(0)} />

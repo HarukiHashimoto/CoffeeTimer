@@ -43,7 +43,8 @@ export default function RecipeDetail({ recipe }: Props) {
   }
 
   // レシピ情報はprops.recipeをそのまま使う。水量・注湯量の表示のみwaterAmountを反映
-  const stepsToShow = recipeToShow.steps || [];
+  // ドリッパー外し（isEjectDripper）ステップは詳細ページのリストから除外
+  const stepsToShow = (recipeToShow.steps || []).filter(step => !step.isEjectDripper);
 
   // デバッグ用：currentRecipeの内容をコンソールに出力
   console.log('Debug - currentRecipe:', JSON.stringify(recipeToShow, null, 2))
@@ -61,8 +62,14 @@ export default function RecipeDetail({ recipe }: Props) {
           <button
             className="mb-6 px-6 py-3 bg-emerald-600 text-white rounded-lg shadow font-bold hover:bg-emerald-700 transition-colors text-lg w-full"
             onClick={() => {
-              setSelectedRecipe(recipeToShow)
-              router.push('/timer')
+               // stepsToShowはisEjectDripper除外済み、dripper-ejectステップは末尾に追加
+               let stepsForTimer = stepsToShow;
+               const dripperEjectStep = (recipeToShow.steps || []).find(s => s.isEjectDripper);
+               if (dripperEjectStep) {
+                 stepsForTimer = [...stepsToShow, dripperEjectStep];
+               }
+               setSelectedRecipe({ ...recipeToShow, steps: stepsForTimer })
+               router.push('/timer')
             }}
           >
             Use This Recipe
@@ -74,10 +81,6 @@ export default function RecipeDetail({ recipe }: Props) {
           <p className="text-gray-600 dark:text-gray-400 mb-4 whitespace-pre-line">{recipe.description}</p>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm mb-6">
-            <div>
-              <div className="font-medium text-gray-900 dark:text-gray-100">抽出方法</div>
-              <div className="text-gray-600 dark:text-gray-400">{recipe.method}</div>
-            </div>
             <div>
               <div className="font-medium text-gray-900 dark:text-gray-100">比率</div>
               <div className="text-gray-600 dark:text-gray-400">{recipe.ratio}</div>
@@ -109,33 +112,23 @@ export default function RecipeDetail({ recipe }: Props) {
            {stepsToShow.length > 0 ? (
             <div className="space-y-3">
               {stepsToShow.map((step, index) => {
-  // 00:00形式に変換
-  const formatTime = (totalSeconds: number) => {
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-  };
-  let pourAmount = step.waterAmount;
-  if (pourAmount === undefined && step.pourPercentage !== undefined) {
-    pourAmount = Math.round(waterAmount * (step.pourPercentage / 100));
-  }
-  const cumulative = getCumulativeWaterAmount(stepsToShow, index);
-  return (
-    <div key={index} className="mb-3 flex gap-3 items-start text-sm">
-      <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">
-        {index + 1}
-      </div>
-      <div className="flex-1">
-        <div className="font-semibold text-gray-900 dark:text-gray-100">
-          {formatTime(step.duration || 0)} - {pourAmount !== undefined ? `${pourAmount}g注ぐ` : step.description}
-        </div>
-        <div className="text-xs text-gray-600 dark:text-gray-400">
-          合計: {cumulative}g
-        </div>
-      </div>
-    </div>
-  );
-})}
+              const cumulative = getCumulativeWaterAmount(stepsToShow, index);
+              return (
+                <div key={index} className="mb-3 flex gap-3 items-start text-sm">
+                  <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">
+                    {index + 1}
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-gray-900 dark:text-gray-100">
+                      {step.description}
+                    </div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">
+                      合計: {cumulative}g
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
               {/* ドリッパーを外すステップ */}
 <div className="flex gap-3 items-start text-sm">
   <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">

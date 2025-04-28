@@ -1,10 +1,15 @@
 export interface Step {
+  /**
+   * 開始時間（秒）: カスタムレシピ編集画面で直接入力する。description生成やduration算出に利用。
+   */
+  startTime?: number;
   description: string;
   duration?: number;
   amount?: number;
   waterAmount?: number;
   pourPercentage?: number;  // 注湯量（全体の何%か）
   shouldSpin?: boolean;     // このステップでスピンするか
+  isEjectDripper?: boolean; // ドリッパーを外す専用ステップか
 }
 
 export interface DrainageSettings {
