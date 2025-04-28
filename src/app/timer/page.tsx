@@ -62,9 +62,6 @@ export default function TimerPage() {
           トップに戻る
         </Link>
       </div>
-      <Link href="/" className="text-blue-600 hover:underline">
-        トップに戻る
-      </Link>
       {/* タイマー本体を上部に配置 */}
       <div className="mt-6">
         {selectedRecipe?.id === 'tetsu-4-6' ? (
