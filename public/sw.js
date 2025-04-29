@@ -4,17 +4,17 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll([
-        '/',
-        '/index.html',
-        '/manifest.json',
-        '/icon-192x192.png',
-        '/icon-512x512.png',
-        '/timer-end.mp3',
-        '/globe.svg',
-        '/next.svg',
-        '/vercel.svg',
-        '/window.svg',
-        '/file.svg'
+        '/CoffeeTimer/',
+        '/CoffeeTimer/index.html',
+        '/CoffeeTimer/manifest.json',
+        '/CoffeeTimer/icon-192x192.png',
+        '/CoffeeTimer/icon-512x512.png',
+        '/CoffeeTimer/timer-end.mp3',
+        '/CoffeeTimer/globe.svg',
+        '/CoffeeTimer/next.svg',
+        '/CoffeeTimer/vercel.svg',
+        '/CoffeeTimer/window.svg',
+        '/CoffeeTimer/file.svg'
       ])
     })
   )
