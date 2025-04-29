@@ -5,16 +5,11 @@ const withPWA = require('next-pwa')({
   disable: process.env.NODE_ENV === 'development',
   buildExcludes: [/middleware-manifest\.json$/],
   fallbacks: {
-    // フォントのフォールバック
-    font: '/static/fonts/fallback.woff2',
-    // 画像のフォールバック
-    image: '/static/images/fallback.png',
-    // 音声のフォールバック
-    audio: false,
-    // 動画のフォールバック
-    video: false,
-    // ドキュメントのフォールバック
     document: false,
+    image: false,
+    font: false,
+    audio: false,
+    video: false
   }
 })
 
