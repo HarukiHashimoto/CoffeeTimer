@@ -4,10 +4,10 @@ export default function Document() {
   return (
     <Html lang="ja">
       <Head>
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="manifest" href="/CoffeeTimer/manifest.json" />
         <meta name="theme-color" content="#000000" />
-        <link rel="apple-touch-icon" href="/icon-192x192.png" />
-        <script src="/register-sw.js" />
+        <link rel="apple-touch-icon" href="/CoffeeTimer/icon-192x192.png" />
+        <script src="/CoffeeTimer/register-sw.js" />
       </Head>
       <body>
         <Main />
