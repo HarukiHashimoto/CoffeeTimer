@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Coffee Timer
 
-## Getting Started
+コーヒーを美味しく淹れるためのレシピ管理＆抽出タイマーアプリ
 
-First, run the development server:
+## 主な機能
+
+- コーヒー抽出レシピの一覧表示・詳細閲覧
+- レシピごとの抽出タイマー機能
+- オリジナル（カスタム）レシピの作成・編集・削除
+- 「4:6メソッド」レシピのカスタマイズ
+- ライト／ダークテーマ切り替え
+
+## インストール・起動方法
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+ブラウザで [http://localhost:3333](http://localhost:3333) を開いてください。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 使い方
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### レシピを見る
 
-## Learn More
+- トップページの「Recipes」から、用意されたコーヒーレシピを一覧で確認できます。
+- レシピをクリックすると、詳細や手順を確認できます。
 
-To learn more about Next.js, take a look at the following resources:
+### タイマー機能
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- 「Timer」ページで、選択したレシピの手順に沿ってタイマーを進行できます。
+- 各ステップの進行状況やお湯の量なども表示されます。
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### カスタムレシピ
 
-## Deploy on Vercel
+1. 「Recipes」ページの「カスタムレシピを追加」ボタンから、自分だけのレシピを作成できます。
+2. 抽出量・豆量・手順（ステップ）・攪拌や注湯のタイミングなどを自由に設定できます。
+3. 作成したレシピは一覧に追加され、編集・削除も可能です。
+4. カスタムレシピもタイマーで利用できます。
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 4:6メソッドのカスタマイズ
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- 「4:6メソッド」レシピは、抽出比率や注湯配分などをカスタマイズしてタイマーに反映できます。
+
+### テーマ切り替え
+
+- 画面右上のボタンで、ライト／ダークテーマを切り替えられます。
+
+## 技術スタック
+
+- Next.js 14
+- React 18
+- TypeScript
+- Tailwind CSS
