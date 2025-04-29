@@ -15,26 +15,65 @@ interface Props {
 export default function RecipeDetail({ recipe }: Props) {
   const { selectedRecipe, setSelectedRecipe } = useRecipe()
   const router = useRouter()
-  const [waterAmount, setWaterAmount] = useState(300)
-
-  // カスタムレシピの場合は必ずprops.recipeを使う（selectedRecipeはTetsu46や他ページの影響を受けるため）
+  // デフォルトはレシピ作成時の湯量
   const recipeToShow = recipe.isCustom ? recipe : (selectedRecipe || recipe)
+  const [waterAmount, setWaterAmount] = useState(recipeToShow.waterAmount)
 
   // レシピが存在しない場合のエラーハンドリング
   if (!recipeToShow) {
     return <div>レシピが見つかりませんでした</div>
   }
 
-  // ステップは必ずprops.recipe（localStorageから取得したもの）をそのまま使う
+  // 指定したwaterAmountで各stepのwaterAmount/descriptionを再生成
+  const generateDisplaySteps = (steps: Recipe['steps'], totalWater: number) => {
+    return steps.map((step, idx, arr) => {
+      // 時刻表示は常に表示（00:00も含む）
+      let timeStr = typeof step.startTime === 'number' ? `${String(Math.floor(step.startTime / 60)).padStart(2, '0')}:${String(step.startTime % 60).padStart(2, '0')}` : '';
+      let desc = '';
+      let waterAmt: number | undefined = undefined;
+      timeStr = timeStr === '' ? '00:00' : timeStr;
+      if (step.isEjectDripper) {
+        // ドリッパー外しはdescriptionの先頭に時刻があれば重複させない
+        if (step.description && /^\d{2}:\d{2}\s*-/.test(step.description)) {
+          desc = step.description;
+        } else {
+          desc = `${timeStr} - ${step.description || 'ドリッパーを外す'}`;
+        }
+      } else if (step.pourPercentage && step.pourPercentage > 0) {
+        waterAmt = Math.round(totalWater * (step.pourPercentage / 100));
+        // 1step目も必ず時刻を表示
+        desc = `${timeStr} - ${waterAmt}g注ぐ`;
+        if (step.shouldSpin) {
+          desc += '（スピン有）';
+        }
+      } else if (step.shouldSpin) {
+        // 1step目も必ず時刻を表示
+        desc = `${timeStr} - 攪拌する（スピン有）`;
+      } else {
+        // 1step目も必ず時刻を表示
+        desc = `${timeStr} - ${step.description || '（内容未設定）'}`;
+      }
+      return {
+        ...step,
+        description: desc,
+        waterAmount: waterAmt,
+      }
+    });
+  }
+
+  // ドリッパー外し以外
+  const stepsToShow = generateDisplaySteps((recipeToShow.steps || []).filter(step => !step.isEjectDripper), waterAmount);
+  // ドリッパー外し（あれば）
+  const dripperEjectStep = (recipeToShow.steps || []).find(s => s.isEjectDripper);
+  const dripperEjectStepDisplay = dripperEjectStep ? generateDisplaySteps([dripperEjectStep], waterAmount)[0] : undefined;
+
+  // 合計湯量計算
   const getCumulativeWaterAmount = (steps: Recipe['steps'], upToIndex: number): number => {
     return steps
       .slice(0, upToIndex + 1)
       .reduce((acc, curr) => acc + (curr.waterAmount || (curr.pourPercentage !== undefined ? Math.round(waterAmount * (curr.pourPercentage / 100)) : 0)), 0)
   }
 
-  // レシピ情報はprops.recipeをそのまま使う。水量・注湯量の表示のみwaterAmountを反映
-  // ドリッパー外し（isEjectDripper）ステップは詳細ページのリストから除外
-  const stepsToShow = (recipeToShow.steps || []).filter(step => !step.isEjectDripper);
 
   return (
     <main className="min-h-screen p-8 max-w-4xl mx-auto bg-gray-100 dark:bg-gray-950">
@@ -49,13 +88,12 @@ export default function RecipeDetail({ recipe }: Props) {
           <button
             className="mb-6 px-6 py-3 bg-emerald-600 text-white rounded-lg shadow font-bold hover:bg-emerald-700 transition-colors text-lg w-full"
             onClick={() => {
-              // stepsToShowはisEjectDripper除外済み、dripper-ejectステップは末尾に追加
-              let stepsForTimer = stepsToShow;
-              const dripperEjectStep = (recipeToShow.steps || []).find(s => s.isEjectDripper);
-              if (dripperEjectStep) {
-                stepsForTimer = [...stepsToShow, dripperEjectStep];
-              }
-              setSelectedRecipe({ ...recipeToShow, steps: stepsForTimer })
+              // 抽出時点のwaterAmountでstep情報を再生成してタイマーに渡す
+              const stepsForTimer = [
+                ...generateDisplaySteps((recipeToShow.steps || []).filter(step => !step.isEjectDripper), waterAmount),
+                ...(dripperEjectStep ? generateDisplaySteps([dripperEjectStep], waterAmount) : [])
+              ];
+              setSelectedRecipe({ ...recipeToShow, steps: stepsForTimer, waterAmount })
               router.push('/timer')
             }}
           >
@@ -116,23 +154,19 @@ export default function RecipeDetail({ recipe }: Props) {
                   </div>
                 );
               })}
-              {/* ドリッパーを外すステップ */}
-              <div className="flex gap-3 items-start text-sm">
-                <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">
-                  {stepsToShow.length + 1}
-                </div>
-                <div className="flex-1">
-                  <div className="font-semibold text-gray-900 dark:text-gray-100">
-                    {(() => {
-                      const duration = recipe.drainageSettings?.drainageDuration ?? 0;
-                      const minutes = Math.floor(duration / 60);
-                      const seconds = duration % 60;
-                      const timeStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-                      return `${timeStr} - ドリッパーを外す（${recipe.drainageSettings?.shouldDrainCompletely ? '落としきる' : '落としきらない'}）`;
-                    })()}
+              {/* ドリッパーを外すステップ（あれば） */}
+              {dripperEjectStepDisplay && (
+                <div className="flex gap-3 items-start text-sm">
+                  <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">
+                    {stepsToShow.length + 1}
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-gray-900 dark:text-gray-100">
+                      {dripperEjectStepDisplay.description}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           ) : (
             <div className="text-gray-500 dark:text-gray-500">ステップが登録されていません。</div>

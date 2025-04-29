@@ -125,7 +125,7 @@ export default function CustomRecipeEditor({ onSave, onCancel, initialRecipe }: 
   return (
     <div className="space-y-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white">カスタムレシピの作成</h2>
-      
+
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">レシピ名</label>
@@ -195,7 +195,7 @@ export default function CustomRecipeEditor({ onSave, onCancel, initialRecipe }: 
               ステップを追加
             </button>
           </div>
-          
+
           {steps.filter(step => !step.isEjectDripper).map((step, index) => (
             <div key={index} className="p-4 border rounded-lg space-y-3">
               <div className="flex justify-between">
@@ -208,7 +208,7 @@ export default function CustomRecipeEditor({ onSave, onCancel, initialRecipe }: 
                   削除
                 </button>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm text-gray-700 dark:text-gray-300">開始時間</label>
@@ -270,57 +270,53 @@ export default function CustomRecipeEditor({ onSave, onCancel, initialRecipe }: 
         </div>
 
         <div className="space-y-3">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">落としきる</label>
-<div className="flex items-center">
-  <input
-    type="checkbox"
-    id="drain-completely"
-    checked={drainageSettings.shouldDrainCompletely}
-    onChange={(e) => setDrainageSettings({
-      ...drainageSettings,
-      shouldDrainCompletely: e.target.checked
-    })}
-    className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
-  />
-  <label htmlFor="drain-completely" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-    落としきる
-  </label>
-</div>
-
-{drainageSettings.shouldDrainCompletely && (
-  <div>
-    <label className="block text-sm text-gray-700 dark:text-gray-300">ドリッパーを外す</label>
-    <div className="flex gap-2">
-      <input
-        type="number"
-        min={0}
-        value={Math.floor((drainageSettings.drainageDuration || 0) / 60)}
-        onChange={e => {
-          const minutes = Number(e.target.value);
-          const seconds = (drainageSettings.drainageDuration || 0) % 60;
-          setDrainageSettings({ ...drainageSettings, drainageDuration: minutes * 60 + seconds });
-        }}
-        className="w-20 rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-        placeholder="分"
-      />
-      <span className="self-center">分</span>
-      <input
-        type="number"
-        min={0}
-        max={59}
-        value={(drainageSettings.drainageDuration || 0) % 60}
-        onChange={e => {
-          const seconds = Number(e.target.value);
-          const minutes = Math.floor((drainageSettings.drainageDuration || 0) / 60);
-          setDrainageSettings({ ...drainageSettings, drainageDuration: minutes * 60 + seconds });
-        }}
-        className="w-20 rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-        placeholder="秒"
-      />
-      <span className="self-center">秒</span>
-    </div>
-  </div>
-)}
+          <div>
+            <label className="block text-sm text-gray-700 dark:text-gray-300">ドリッパーを外す</label>
+            <div className="flex gap-2">
+              <input
+                type="number"
+                min={0}
+                value={Math.floor((drainageSettings.drainageDuration || 0) / 60)}
+                onChange={e => {
+                  const minutes = Number(e.target.value);
+                  const seconds = (drainageSettings.drainageDuration || 0) % 60;
+                  setDrainageSettings({ ...drainageSettings, drainageDuration: minutes * 60 + seconds });
+                }}
+                className="w-20 rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                placeholder="分"
+              />
+              <span className="self-center">分</span>
+              <input
+                type="number"
+                min={0}
+                max={59}
+                value={(drainageSettings.drainageDuration || 0) % 60}
+                onChange={e => {
+                  const seconds = Number(e.target.value);
+                  const minutes = Math.floor((drainageSettings.drainageDuration || 0) / 60);
+                  setDrainageSettings({ ...drainageSettings, drainageDuration: minutes * 60 + seconds });
+                }}
+                className="w-20 rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                placeholder="秒"
+              />
+              <span className="self-center">秒</span>
+            </div>
+          </div>
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="drain-completely"
+              checked={drainageSettings.shouldDrainCompletely}
+              onChange={(e) => setDrainageSettings({
+                ...drainageSettings,
+                shouldDrainCompletely: e.target.checked
+              })}
+              className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
+            />
+            <label htmlFor="drain-completely" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+              落としきる
+            </label>
+          </div>
         </div>
       </div>
 
