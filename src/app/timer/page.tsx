@@ -43,21 +43,21 @@ export default function TimerPage() {
     return { progressWidth }
   }
   return (
-    <div className="container mx-auto px-4 py-4">
+    <div className="min-h-screen bg-light-bg dark:bg-dark-bg p-4 md:p-8">
       {/* ヘッダー */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4 max-w-xl mx-auto">
         <div className="flex items-center space-x-3">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-emerald-600" viewBox="0 0 200 148.813">
-            <path className="fill-emerald-600" d="M18.123,265.2a5.94,5.94,0,0,0-5.952,5.953V408.063a5.94,5.94,0,0,0,5.952,5.953h125a5.94,5.94,0,0,0,5.953-5.953V374.48a36.472,36.472,0,0,0,22.027,7.389c24.021,0,41.065-22.9,41.065-48.211s-17.045-48.222-41.065-48.222a36.465,36.465,0,0,0-22.027,7.392V271.155a5.94,5.94,0,0,0-5.953-5.953ZM171.105,308.11c8.829,0,18.4,10.118,18.4,25.549s-9.573,25.547-18.4,25.547-18.413-10.116-18.413-25.547S162.277,308.11,171.105,308.11Z" transform="translate(-12.171 -265.202)" />
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-light-primary dark:text-dark-primary" viewBox="0 0 200 148.813">
+            <path className="fill-current" d="M18.123,265.2a5.94,5.94,0,0,0-5.952,5.953V408.063a5.94,5.94,0,0,0,5.952,5.953h125a5.94,5.94,0,0,0,5.953-5.953V374.48a36.472,36.472,0,0,0,22.027,7.389c24.021,0,41.065-22.9,41.065-48.211s-17.045-48.222-41.065-48.222a36.465,36.465,0,0,0-22.027,7.392V271.155a5.94,5.94,0,0,0-5.953-5.953ZM171.105,308.11c8.829,0,18.4,10.118,18.4,25.549s-9.573,25.547-18.4,25.547-18.413-10.116-18.413-25.547S162.277,308.11,171.105,308.11Z" transform="translate(-12.171 -265.202)" />
           </svg>
-          <h1 className="text-3xl font-bold text-emerald-600 dark:text-emerald-600">Timer</h1>
+          <h1 className="text-3xl md:text-4xl font-semibold text-light-text dark:text-dark-text">Timer</h1>
         </div>
-        <Link href="/" className="text-blue-600 hover:underline">
+        <Link href="/" className="text-light-secondary dark:text-dark-secondary hover:underline">
           トップに戻る
         </Link>
       </div>
       {/* タイマー本体を上部に配置 */}
-      <div className="mt-6">
+      <div className="content-container mx-auto max-w-xl mt-6">
         {selectedRecipe?.id === 'tetsu-4-6' ? (
           <Tetsu46Timer />
         ) : (
@@ -66,10 +66,10 @@ export default function TimerPage() {
       </div>
       {/* レシピ未選択時のみ案内を表示 */}
       {!selectedRecipe && (
-        <div className="p-8 text-center text-gray-500">
+        <div className="p-8 text-center text-light-text/75 dark:text-dark-text/75 mt-6">
           レシピが選択されていません。
           <div className="mt-4">
-            <Link href="/recipes" className="text-blue-600 hover:underline">レシピ一覧へ</Link>
+            <Link href="/recipes" className="text-light-secondary dark:text-dark-secondary hover:underline">レシピ一覧へ</Link>
           </div>
         </div>
       )}

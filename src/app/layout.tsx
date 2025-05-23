@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <body className={`${inter.className} ${robotoMono.variable} bg-gray-50 dark:bg-gray-900`}>
+      <body className={`${inter.className} ${robotoMono.variable}`}>
         <div className="fixed top-4 right-4 z-50 flex space-x-2">
           <div id="back-button-container"></div>
           <ThemeToggle />

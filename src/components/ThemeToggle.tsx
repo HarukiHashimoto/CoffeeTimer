@@ -31,11 +31,12 @@ export default function ThemeToggle() {
   };
 
   return (
-    <button 
-      onClick={toggleTheme} 
-      className="p-2 bg-light-bg dark:bg-dark-bg border border-gray-300 dark:border-gray-700 rounded-full shadow-md hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors"
+    <button
+      onClick={toggleTheme}
+      className="p-2.5 bg-light-surface dark:bg-dark-surface border border-neutral-300 dark:border-neutral-600 rounded-full shadow-md hover:bg-neutral-100 dark:hover:bg-dark-surface-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-light-primary dark:focus-visible:ring-dark-primary focus-visible:ring-offset-light-surface dark:focus-visible:ring-offset-dark-surface transition-colors duration-150"
+      aria-label={isDarkMode ? "Switch to light theme" : "Switch to dark theme"}
     >
-      <span className="text-light-text dark:text-dark-text">
+      <span className="text-light-text dark:text-dark-text text-xl">
         {isDarkMode ? '☀️' : '🌙'}
       </span>
     </button>

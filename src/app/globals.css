@@ -6,6 +6,7 @@
   body {
     background-color: theme('colors.light-bg');
     color: theme('colors.light-text');
+    font-family: 'Inter', sans-serif;
   }
   .dark body {
     background-color: theme('colors.dark-bg');
@@ -14,22 +15,28 @@
   .content-container {
     background-color: theme('colors.light-surface');
     border-radius: 0.5rem;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
     padding: 1rem;
+    @apply shadow-lg;
   }
   .dark .content-container {
     background-color: theme('colors.dark-surface');
-    border-radius: 0.5rem;
-    box-shadow: 0 1px 3px 0 rgba(255, 255, 255, 0.1);
-    padding: 1rem;
+    /* The shadow-lg from the base .content-container rule will apply here.
+       border-radius and padding will also be inherited. */
+  }
+  h1 {
+    @apply text-3xl md:text-4xl font-semibold;
+  }
+  h2 {
+    @apply text-2xl md:text-3xl font-semibold;
+  }
+  h3 {
+    @apply text-xl md:text-2xl font-semibold;
   }
   h1, h2, h3 {
-    color: theme('colors.light-primary');
-    font-weight: 600;
+    color: theme('colors.light-text');
   }
   .dark h1, .dark h2, .dark h3 {
-    color: theme('colors.dark-primary');
-    font-weight: 600;
+    color: theme('colors.dark-text');
   }
   a {
     color: theme('colors.light-secondary');
@@ -45,30 +52,9 @@
   }
   p {
     line-height: 1.625;
+    color: theme('colors.light-text');
   }
-}
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  .dark p {
+    color: theme('colors.dark-text');
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }

@@ -37,30 +37,33 @@ export default function CustomRecipesPage() {
   if (id) {
     if (!recipe) {
       return (
-        <main className="min-h-screen p-8 flex flex-col items-center justify-center">
-          <div className="text-xl mb-4">レシピが見つかりませんでした。</div>
-          <Link href="/recipes" className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">レシピ一覧へ戻る</Link>
+        <main className="min-h-screen p-8 bg-light-bg dark:bg-dark-bg flex flex-col items-center justify-center">
+          <div className="text-xl mb-4 text-light-text dark:text-dark-text">レシピが見つかりませんでした。</div>
+          <Link href="/recipes" className="px-4 py-2 bg-light-primary dark:bg-dark-primary text-white rounded-lg hover:bg-light-primary/90 dark:hover:bg-dark-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-light-primary dark:focus-visible:ring-dark-primary focus-visible:ring-offset-light-bg dark:focus-visible:ring-offset-dark-bg">レシピ一覧へ戻る</Link>
         </main>
       )
     }
     return (
-      <main className="min-h-screen p-4">
-        <RecipeDetail recipe={recipe} />
+      <main className="min-h-screen p-8 bg-light-bg dark:bg-dark-bg">
+        <div className="content-container mx-auto max-w-3xl">
+          <RecipeDetail recipe={recipe} />
+        </div>
       </main>
     )
   }
 
   // 一覧ページ
   return (
-    <main className="min-h-screen p-8">
-      <h1 className="text-2xl font-bold mb-6 text-emerald-600">カスタムレシピ一覧</h1>
+    <main className="min-h-screen p-8 bg-light-bg dark:bg-dark-bg mx-auto max-w-7xl">
+      <h1 className="text-3xl md:text-4xl font-semibold mb-6 text-light-text dark:text-dark-text">カスタムレシピ一覧</h1>
       {customRecipes.length === 0 ? (
-        <div className="text-gray-500">カスタムレシピがありません。</div>
+        <div className="text-light-text/75 dark:text-dark-text/75">カスタムレシピがありません。</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {customRecipes.map(recipe => (
-            <div key={recipe.id} className="relative">
+            <div key={recipe.id} className="relative content-container"> {/* Applied content-container here */}
               <Link href={`/custom-recipes?id=${recipe.id}`} className="block">
+                {/* RecipeDetail is already styled to fit within a content-container like context */}
                 <RecipeDetail recipe={recipe} />
               </Link>
             </div>

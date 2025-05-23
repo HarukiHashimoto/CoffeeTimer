@@ -8,10 +8,10 @@ interface RecipeCardProps {
 
 export default function RecipeCard({ recipe }: RecipeCardProps) {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow p-4">
-      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{recipe.name}</h3>
-      <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">{recipe.description}</p>
-      <div className="grid grid-cols-2 gap-2 text-sm text-gray-500 dark:text-gray-400">
+    <div className="p-4 bg-light-surface dark:bg-dark-surface rounded-lg shadow-lg hover:shadow-xl dark:border dark:border-dark-surface-secondary transition-all duration-200 transform hover:scale-105">
+      <h3 className="text-lg font-bold text-light-text dark:text-dark-text mb-2">{recipe.name}</h3>
+      <p className="text-sm text-light-text/75 dark:text-dark-text/75 mb-4 line-clamp-3">{recipe.description}</p>
+      <div className="grid grid-cols-2 gap-2 text-sm text-light-text/60 dark:text-dark-text/60">
         <div>抽出時間: {(() => {
           if (recipe.isCustom && recipe.steps && recipe.steps.length > 0) {
             const ejectStep = recipe.steps.find(s => s.isEjectDripper);

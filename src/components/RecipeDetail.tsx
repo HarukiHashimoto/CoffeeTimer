@@ -76,17 +76,17 @@ export default function RecipeDetail({ recipe }: Props) {
 
 
   return (
-    <main className="min-h-screen p-8 max-w-4xl mx-auto bg-gray-100 dark:bg-gray-950">
-      <Link href="/recipes" className="text-blue-600 dark:text-blue-400 hover:underline mb-4 inline-block text-base font-medium">
+    <div>
+      <Link href="/recipes" className="text-light-secondary dark:text-dark-secondary hover:underline mb-4 inline-block text-base font-medium">
         ← Back to recipes
       </Link>
 
-      <h1 className="text-4xl font-bold mb-6 text-gray-900 dark:text-gray-100">{recipe.name}</h1>
+      <h1 className="text-2xl md:text-3xl font-semibold mb-6 text-light-text dark:text-dark-text">{recipe.name}</h1>
 
       <div className="space-y-8">
-        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
+        <div className="p-6">
           <button
-            className="mb-6 px-6 py-3 bg-emerald-600 text-white rounded-lg shadow font-bold hover:bg-emerald-700 transition-colors text-lg w-full"
+            className="mb-6 w-full px-6 py-3 bg-light-primary dark:bg-dark-primary text-white rounded-lg shadow font-bold hover:bg-light-primary/90 dark:hover:bg-dark-primary/90 transition-colors text-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-light-primary dark:focus-visible:ring-dark-primary focus-visible:ring-offset-light-surface dark:focus-visible:ring-offset-dark-surface"
             onClick={() => {
               // 抽出時点のwaterAmountでstep情報を再生成してタイマーに渡す
               const stepsForTimer = [
@@ -102,29 +102,29 @@ export default function RecipeDetail({ recipe }: Props) {
           <div className="mb-6">
             <WaterAmountSelector value={waterAmount} onChange={setWaterAmount} />
           </div>
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-200">レシピ詳細</h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-4 whitespace-pre-line">{recipe.description}</p>
+          <h2 className="text-xl font-semibold mb-4 text-light-text dark:text-dark-text">レシピ詳細</h2>
+          <p className="text-light-text/90 dark:text-dark-text/90 mb-4 whitespace-pre-line">{recipe.description}</p>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm mb-6">
             <div>
-              <div className="font-medium text-gray-900 dark:text-gray-100">比率</div>
-              <div className="text-gray-600 dark:text-gray-400">{recipe.ratio}</div>
+              <div className="font-medium text-light-text dark:text-dark-text">比率</div>
+              <div className="text-light-text/75 dark:text-dark-text/75">{recipe.ratio}</div>
             </div>
             <div>
-              <div className="font-medium text-gray-900 dark:text-gray-100">挽き目</div>
-              <div className="text-gray-600 dark:text-gray-400">{recipe.grindSize}</div>
+              <div className="font-medium text-light-text dark:text-dark-text">挽き目</div>
+              <div className="text-light-text/75 dark:text-dark-text/75">{recipe.grindSize}</div>
             </div>
             <div>
-              <div className="font-medium text-gray-900 dark:text-gray-100">コーヒー豆</div>
-              <div className="text-gray-600 dark:text-gray-400">{recipe.coffeeAmount ? `${recipe.coffeeAmount}g` : '-'}</div>
+              <div className="font-medium text-light-text dark:text-dark-text">コーヒー豆</div>
+              <div className="text-light-text/75 dark:text-dark-text/75">{recipe.coffeeAmount ? `${recipe.coffeeAmount}g` : '-'}</div>
             </div>
             <div>
-              <div className="font-medium text-gray-900 dark:text-gray-100">お湯</div>
-              <div className="text-gray-600 dark:text-gray-400">{recipe.waterAmount ? `${recipe.waterAmount}g` : '-'}</div>
+              <div className="font-medium text-light-text dark:text-dark-text">お湯</div>
+              <div className="text-light-text/75 dark:text-dark-text/75">{recipe.waterAmount ? `${recipe.waterAmount}g` : '-'}</div>
             </div>
             <div>
-              <div className="font-medium text-gray-900 dark:text-gray-100">抽出完了時間</div>
-              <div className="text-gray-600 dark:text-gray-400">
+              <div className="font-medium text-light-text dark:text-dark-text">抽出完了時間</div>
+              <div className="text-light-text/75 dark:text-dark-text/75">
                 {recipe.drainageSettings?.drainageDuration !== undefined
                   ? `${Math.floor(recipe.drainageSettings.drainageDuration / 60)}分${recipe.drainageSettings.drainageDuration % 60}秒`
                   : '-'}
@@ -133,21 +133,21 @@ export default function RecipeDetail({ recipe }: Props) {
           </div>
         </div>
         <div>
-          <h2 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">抽出ステップ</h2>
+          <h2 className="text-lg font-semibold mb-2 text-light-text dark:text-dark-text">抽出ステップ</h2>
           {stepsToShow.length > 0 ? (
             <div className="space-y-3">
               {stepsToShow.map((step, index) => {
                 const cumulative = getCumulativeWaterAmount(stepsToShow, index);
                 return (
                   <div key={index} className="mb-3 flex gap-3 items-start text-sm">
-                    <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">
+                    <div className="w-5 h-5 rounded-full bg-light-primary dark:bg-dark-primary text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">
                       {index + 1}
                     </div>
                     <div className="flex-1">
-                      <div className="font-semibold text-gray-900 dark:text-gray-100">
+                      <div className="font-semibold text-light-text dark:text-dark-text">
                         {step.description}
                       </div>
-                      <div className="text-xs text-gray-600 dark:text-gray-400">
+                      <div className="text-xs text-light-text/75 dark:text-dark-text/75">
                         合計: {cumulative}g
                       </div>
                     </div>
@@ -157,11 +157,11 @@ export default function RecipeDetail({ recipe }: Props) {
               {/* ドリッパーを外すステップ（あれば） */}
               {dripperEjectStepDisplay && (
                 <div className="flex gap-3 items-start text-sm">
-                  <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">
+                  <div className="w-5 h-5 rounded-full bg-light-primary dark:bg-dark-primary text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">
                     {stepsToShow.length + 1}
                   </div>
                   <div className="flex-1">
-                    <div className="font-semibold text-gray-900 dark:text-gray-100">
+                    <div className="font-semibold text-light-text dark:text-dark-text">
                       {dripperEjectStepDisplay.description}
                     </div>
                   </div>
@@ -169,10 +169,10 @@ export default function RecipeDetail({ recipe }: Props) {
               )}
             </div>
           ) : (
-            <div className="text-gray-500 dark:text-gray-500">ステップが登録されていません。</div>
+            <div className="text-light-text/60 dark:text-dark-text/60">ステップが登録されていません。</div>
           )}
         </div>
       </div>
-    </main>
+    </div>
   )
 }

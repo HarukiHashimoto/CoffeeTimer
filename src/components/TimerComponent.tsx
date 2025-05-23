@@ -48,16 +48,16 @@ export default function TimerComponent({ onTimeUpdate, onReset, className = '' }
   }
 
   return (
-    <div className={`space-y-6 ${className}`}>
+    <div className={className}>
       <div className="text-center">
-        <div className="text-8xl font-bold text-gray-900 tracking-tighter tabular-nums font-[var(--font-roboto-mono)] mb-4 dark:text-white">
+        <div className="text-7xl sm:text-8xl md:text-9xl font-bold text-light-primary dark:text-dark-primary tracking-tighter tabular-nums font-[var(--font-roboto-mono)] mb-8">
           {formatTime(time)}
         </div>
-        <div className="flex justify-center space-x-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           {!isRunning && time === 0 && (
             <button
               onClick={startTimer}
-              className="px-5 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-base transition-colors shadow-sm"
+              className="px-8 py-3 text-lg font-medium rounded-lg shadow-md w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-dark-surface bg-light-primary dark:bg-dark-primary text-white hover:bg-light-primary/90 dark:hover:bg-dark-primary/90 focus:ring-light-primary dark:focus:ring-dark-primary"
             >
               Start
             </button>
@@ -65,15 +65,24 @@ export default function TimerComponent({ onTimeUpdate, onReset, className = '' }
           {isRunning && (
             <button
               onClick={pauseTimer}
-              className="px-5 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 text-base transition-colors shadow-sm"
+              className="px-8 py-3 text-lg font-medium rounded-lg shadow-md w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-dark-surface bg-light-secondary dark:bg-dark-secondary text-white hover:bg-light-secondary/90 dark:hover:bg-dark-secondary/90 focus:ring-light-secondary dark:focus:ring-dark-secondary"
             >
               Pause
+            </button>
+          )}
+          {/* Show Reset button if not in initial state (i.e., if running or if paused but time > 0) */}
+          {(!isRunning && time > 0) && ( // This condition ensures reset is shown when paused and time > 0
+             <button
+              onClick={startTimer} // Should be "Resume" or "Start" if we want to differentiate
+              className="px-8 py-3 text-lg font-medium rounded-lg shadow-md w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-dark-surface bg-light-primary dark:bg-dark-primary text-white hover:bg-light-primary/90 dark:hover:bg-dark-primary/90 focus:ring-light-primary dark:focus:ring-dark-primary"
+            >
+              Resume
             </button>
           )}
           {(isRunning || time > 0) && (
             <button
               onClick={resetTimer}
-              className="px-5 py-2 border border-gray-300 text-gray-700 dark:text-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 text-base transition-colors shadow-sm"
+              className="px-8 py-3 text-lg font-medium rounded-lg shadow-md w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-dark-surface border border-neutral-300 dark:border-neutral-600 text-light-text dark:text-dark-text bg-light-surface dark:bg-dark-surface hover:bg-neutral-100 dark:hover:bg-dark-surface-secondary focus:ring-light-secondary dark:focus:ring-dark-secondary"
             >
               Reset
             </button>

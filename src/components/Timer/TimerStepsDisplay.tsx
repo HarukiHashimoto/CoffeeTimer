@@ -52,33 +52,33 @@ export default function TimerStepsDisplay({ steps, currentTime }: Props) {
           }
         }
 
-        // デバッグログ
-        console.log('[TimerStepsDisplay] step', {
-          index,
-          description: step.description,
-          isEjectDripper: step.isEjectDripper,
-          currentTime,
-          startTime: step.startTime,
-          progressWidth,
-          isLastNormalStep,
-          dripperEjectStepStart: dripperEjectStep?.startTime,
-        });
+        // デバッグログは本番では削除または条件付きにすることを推奨
+        // console.log('[TimerStepsDisplay] step', {
+        //   index,
+        //   description: step.description,
+        //   isEjectDripper: step.isEjectDripper,
+        //   currentTime,
+        //   startTime: step.startTime,
+        //   progressWidth,
+        //   isLastNormalStep,
+        //   dripperEjectStepStart: dripperEjectStep?.startTime,
+        // });
 
         return (
-          <div key={index} className="relative flex items-center space-x-3 bg-gray-50 p-2 rounded-lg overflow-hidden">
+          <div key={index} className="relative flex items-center space-x-3 bg-light-bg dark:bg-dark-surface-secondary p-3 rounded-lg overflow-hidden">
             {/* プログレスバー */}
             <div
-              className="absolute left-0 top-0 h-full bg-emerald-200 opacity-50 transition-all duration-300"
+              className="absolute left-0 top-0 h-full bg-light-primary/30 dark:bg-dark-primary/30 transition-all duration-300"
               style={{ width: progressWidth }}
             />
-            <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 font-mono text-sm font-bold relative z-10">
+            <div className="w-8 h-8 rounded-full bg-light-primary dark:bg-dark-primary text-white flex items-center justify-center flex-shrink-0 font-mono text-sm font-bold relative z-10">
               {index + 1}
             </div>
             <div className="flex-grow relative z-10">
               <div>
-                <p className="text-gray-900 text-sm font-medium">{step.description || '（内容未設定）'}</p>
+                <p className="text-light-text dark:text-dark-text text-sm font-medium">{step.description || '（内容未設定）'}</p>
                 {step.waterAmount ? (
-                  <p className="text-gray-600 text-xs mt-1">
+                  <p className="text-light-text/75 dark:text-dark-text/75 text-xs mt-1">
                     合計: {steps.slice(0, index + 1).reduce((sum, s) => sum + (typeof s.waterAmount === 'number' ? s.waterAmount : 0), 0)}g
                   </p>
                 ) : null}
